@@ -201,47 +201,27 @@ struct YouVsAISession {
 }
 
 struct YouVsAIPersistence {
-    private static let bestTimeKey = "youVsAI_bestTime"
-    private static let winStreakKey = "youVsAI_winStreak"
-    private static let currentStreakKey = "youVsAI_currentStreak"
+    private static let bestRoundsKey = "youVsAI_bestRounds"
 
-    static var bestTime: TimeInterval? {
+    static var bestRoundsWon: Int? {
         get {
-            let time = UserDefaults.standard.double(forKey: bestTimeKey)
-            return time > 0 ? time : nil
+            let rounds = UserDefaults.standard.integer(forKey: bestRoundsKey)
+            return rounds > 0 ? rounds : nil
         }
         set {
-            if let time = newValue {
-                UserDefaults.standard.set(time, forKey: bestTimeKey)
+            if let rounds = newValue {
+                UserDefaults.standard.set(rounds, forKey: bestRoundsKey)
             }
         }
     }
 
-    static var longestWinStreak: Int {
-        get { UserDefaults.standard.integer(forKey: winStreakKey) }
-        set { UserDefaults.standard.set(newValue, forKey: winStreakKey) }
-    }
-
-    static var currentStreak: Int {
-        get { UserDefaults.standard.integer(forKey: currentStreakKey) }
-        set { UserDefaults.standard.set(newValue, forKey: currentStreakKey) }
-    }
-
-    static func recordWin(totalTime: TimeInterval) {
-        currentStreak += 1
-        if currentStreak > longestWinStreak {
-            longestWinStreak = currentStreak
-        }
-        if let best = bestTime {
-            if totalTime < best {
-                bestTime = totalTime
+    static func recordRoundsWon(_ rounds: Int, total: Int) {
+        if let best = bestRoundsWon {
+            if rounds > best {
+                bestRoundsWon = rounds
             }
         } else {
-            bestTime = totalTime
+            bestRoundsWon = rounds
         }
-    }
-
-    static func recordLoss() {
-        currentStreak = 0
     }
 }

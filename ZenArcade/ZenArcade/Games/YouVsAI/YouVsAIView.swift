@@ -112,60 +112,60 @@ struct AIMirrorView: View {
     let progress: Double
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.sm) {
-            HStack(spacing: Theme.Spacing.sm) {
+        VStack(spacing: 28) {
+            HStack(spacing: Theme.Spacing.md) {
                 ForEach(answers, id: \.self) { answer in
                     Text("\(answer)")
-                        .font(Theme.Font.rounded(16, .semibold))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.5))
-                        .frame(width: 50, height: 36)
+                        .font(Theme.Font.rounded(20, .bold))
+                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
+                        .frame(width: 80, height: 56)
                         .background(
-                            RoundedRectangle(cornerRadius: Theme.Radius.small)
-                                .fill(Color.white.opacity(0.03))
+                            RoundedRectangle(cornerRadius: Theme.Radius.button)
+                                .fill(Color.white.opacity(0.02))
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: Theme.Radius.small)
-                                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: Theme.Radius.button)
+                                .stroke(Color.white.opacity(0.04), lineWidth: 1)
                         )
                 }
             }
-            .rotationEffect(.degrees(180))
 
-            HStack(spacing: Theme.Spacing.xs) {
+            HStack(spacing: Theme.Spacing.sm) {
                 Text(equation.displayText)
-                    .font(Theme.Font.rounded(28, .bold))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
+                    .font(Theme.Font.rounded(44, .bold))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.35))
 
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Theme.Colors.accentRed.opacity(0.4), lineWidth: 2)
-                    .frame(width: 36, height: 36)
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Theme.Colors.accentRed.opacity(0.35), lineWidth: 2)
+                    .frame(width: 48, height: 48)
             }
-            .rotationEffect(.degrees(180))
+            .frame(height: 60)
 
             GeometryReader { geo in
-                ZStack(alignment: .leading) {
+                ZStack(alignment: .trailing) {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.white.opacity(0.05))
                         .frame(height: 4)
 
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(Theme.Colors.accentRed.opacity(0.6))
+                        .fill(Theme.Colors.accentRed.opacity(0.5))
                         .frame(width: geo.size.width * progress, height: 4)
                         .animation(.linear(duration: 0.05), value: progress)
                 }
             }
             .frame(height: 4)
-            .padding(.horizontal, Theme.Spacing.lg)
         }
-        .padding(Theme.Spacing.md)
+        .padding(.vertical, 20)
+        .padding(.horizontal, Theme.Spacing.md)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .fill(Color.white.opacity(0.02))
+                .fill(Theme.Colors.cardFill.opacity(0.5))
         )
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .stroke(Color.white.opacity(0.04), lineWidth: 1)
+                .stroke(Theme.Colors.cardStroke, lineWidth: 1)
         )
+        .rotationEffect(.degrees(180))
     }
 }
 

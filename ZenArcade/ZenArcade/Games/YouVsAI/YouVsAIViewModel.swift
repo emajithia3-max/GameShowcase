@@ -167,13 +167,6 @@ final class YouVsAIViewModel {
     private func completeGame() {
         isComplete = true
         aiTimer?.invalidate()
-
-        let didWin = session.userWins >= 3
-        if didWin {
-            YouVsAIPersistence.recordWin(totalTime: session.userTotalTime)
-        } else {
-            YouVsAIPersistence.recordLoss()
-        }
     }
 
     func requestQuit() {
@@ -192,17 +185,14 @@ final class YouVsAIViewModel {
     func getGameResult() -> GameResult {
         let didWin = session.userWins >= 3
 
+        YouVsAIPersistence.recordRoundsWon(session.userWins, total: session.totalRounds)
+
         var stats: [String: String] = [:]
         stats["Rounds Won"] = "\(session.userWins)/\(session.totalRounds)"
-        stats["Correct Answers"] = "\(session.correctAnswers)"
-        stats["Total Time"] = String(format: "%.1fs", session.userTotalTime)
-        stats["Avg Reaction"] = String(format: "%.2fs", session.userAverageTime)
 
-        if let bestTime = YouVsAIPersistence.bestTime {
-            stats["Your Best"] = String(format: "%.1fs", bestTime)
+        if let best = YouVsAIPersistence.bestRoundsWon {
+            stats["Best"] = "\(best)/\(session.totalRounds)"
         }
-
-        stats["Win Streak"] = "\(YouVsAIPersistence.currentStreak)"
 
         return GameResult(
             won: didWin,
