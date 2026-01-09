@@ -13,16 +13,16 @@ struct WordSearchView: View {
                     viewModel.requestQuit()
                 })
 
-                Spacer().frame(height: Theme.Spacing.md)
+                Spacer()
 
-                VStack(spacing: Theme.Spacing.xs) {
+                VStack(spacing: 8) {
                     Text("Find the following words in the grid:")
-                        .font(Theme.Font.rounded(14))
+                        .font(Theme.Font.rounded(15))
                         .foregroundStyle(Theme.Colors.textSecondary)
 
                     if let word = viewModel.currentWord {
                         Text(word)
-                            .font(Theme.Font.rounded(32, .bold))
+                            .font(Theme.Font.rounded(34, .bold))
                             .foregroundStyle(Theme.Colors.textPrimary)
                             .contentTransition(.numericText())
                             .animation(.easeInOut, value: word)
@@ -34,15 +34,15 @@ struct WordSearchView: View {
                         .monospacedDigit()
                 }
 
-                Spacer().frame(height: Theme.Spacing.md)
+                Spacer().frame(height: 28)
 
                 WordProgressView(
                     words: viewModel.targetWords,
                     foundWords: viewModel.foundWords
                 )
-                .padding(.horizontal, Theme.Spacing.lg)
+                .padding(.horizontal, 28)
 
-                Spacer().frame(height: Theme.Spacing.md)
+                Spacer().frame(height: 28)
 
                 CardView {
                     WordGridView(
@@ -56,16 +56,16 @@ struct WordSearchView: View {
                             viewModel.endSelection(positions)
                         }
                     )
-                    .frame(height: CGFloat(viewModel.grid.rows) * 40 + 20)
+                    .frame(height: CGFloat(viewModel.grid.rows) * 40 + 24)
                 }
-                .padding(.horizontal, Theme.Spacing.md)
+                .padding(.horizontal, 20)
 
                 Spacer()
 
                 CircleButton(systemName: "xmark", action: {
                     viewModel.requestQuit()
                 }, tint: Theme.Colors.accentRed)
-                .padding(.bottom, Theme.Spacing.lg)
+                .padding(.bottom, 32)
             }
         }
         .onAppear {
