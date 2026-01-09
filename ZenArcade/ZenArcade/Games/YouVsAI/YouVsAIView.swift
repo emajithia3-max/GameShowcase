@@ -9,11 +9,7 @@ struct YouVsAIView: View {
             StarBackground()
 
             VStack(spacing: 0) {
-                NavigationHeader("You vs AI", onDismiss: {
-                    viewModel.requestQuit()
-                })
-
-                Spacer().frame(height: 24)
+                Spacer().frame(height: 60)
 
                 if let equation = viewModel.currentEquation {
                     AIMirrorView(

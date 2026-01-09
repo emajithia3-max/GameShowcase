@@ -9,10 +9,6 @@ struct WordSearchView: View {
             StarBackground()
 
             VStack(spacing: 0) {
-                NavigationHeader("Word Search", onDismiss: {
-                    viewModel.requestQuit()
-                })
-
                 Spacer()
 
                 VStack(spacing: 8) {

@@ -2,109 +2,117 @@ import SwiftUI
 
 struct MenuView: View {
     @Environment(AppRouter.self) private var router
+    @State private var selectedIndex: Int? = nil
 
     var body: some View {
         ZStack {
             StarBackground()
 
-            VStack(spacing: 0) {
-                NavigationHeader("Zen Session", rightAction: {})
-
+            VStack {
                 Spacer()
 
-                CardView {
-                    VStack(spacing: Theme.Spacing.lg) {
-                        Text("Choose Your Challenge")
-                            .font(Theme.Font.rounded(22, .bold))
-                            .foregroundStyle(Theme.Colors.textPrimary)
-
-                        GameTile(
-                            icon: "brain.head.profile",
-                            title: "You vs AI",
-                            subtitle: "Race against the machine",
-                            accentColor: Theme.Colors.accentBlue
-                        ) {
-                            router.navigate(to: .youVsAI)
+                ZStack {
+                    TiltedGameCard(
+                        icon: "textformat.abc",
+                        title: "Word Search",
+                        subtitle: "Find hidden words",
+                        accentColor: Theme.Colors.accentGreen,
+                        rotation: -8,
+                        offset: CGSize(width: -20, height: 40),
+                        isSelected: selectedIndex == 1
+                    ) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            selectedIndex = 1
                         }
-
-                        GameTile(
-                            icon: "textformat.abc",
-                            title: "Word Search",
-                            subtitle: "Find hidden words",
-                            accentColor: Theme.Colors.accentGreen
-                        ) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             router.navigate(to: .wordSearch)
                         }
                     }
-                    .padding(.vertical, Theme.Spacing.sm)
+
+                    TiltedGameCard(
+                        icon: "brain.head.profile",
+                        title: "You vs AI",
+                        subtitle: "Race against the machine",
+                        accentColor: Theme.Colors.accentBlue,
+                        rotation: 6,
+                        offset: CGSize(width: 15, height: -30),
+                        isSelected: selectedIndex == 0
+                    ) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            selectedIndex = 0
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            router.navigate(to: .youVsAI)
+                        }
+                    }
                 }
-                .padding(.horizontal, Theme.Spacing.lg)
+                .frame(height: 380)
 
                 Spacer()
-
-                VStack(spacing: Theme.Spacing.xs) {
-                    Text("Zen Arcade")
-                        .font(Theme.Font.rounded(14, .medium))
-                        .foregroundStyle(Theme.Colors.textSecondary)
-
-                    Text("Focus. Breathe. Play.")
-                        .font(Theme.Font.rounded(12))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
-                }
-                .padding(.bottom, Theme.Spacing.lg)
             }
+        }
+        .onAppear {
+            selectedIndex = nil
         }
     }
 }
 
-struct GameTile: View {
+struct TiltedGameCard: View {
     let icon: String
     let title: String
     let subtitle: String
     let accentColor: Color
+    let rotation: Double
+    let offset: CGSize
+    let isSelected: Bool
     let action: () -> Void
-
-    @State private var isPressed = false
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: Theme.Spacing.md) {
+            VStack(spacing: 20) {
                 ZStack {
-                    RoundedRectangle(cornerRadius: Theme.Radius.small)
+                    Circle()
                         .fill(accentColor.opacity(0.15))
-                        .frame(width: 56, height: 56)
+                        .frame(width: 80, height: 80)
 
                     Image(systemName: icon)
-                        .font(.system(size: 24))
+                        .font(.system(size: 36))
                         .foregroundStyle(accentColor)
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(spacing: 6) {
                     Text(title)
-                        .font(Theme.Font.rounded(18, .semibold))
+                        .font(Theme.Font.rounded(24, .bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
 
                     Text(subtitle)
-                        .font(Theme.Font.rounded(14))
+                        .font(Theme.Font.rounded(15))
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(Theme.Colors.textSecondary)
             }
-            .padding(Theme.Spacing.md)
+            .frame(width: 200, height: 220)
             .background(
-                RoundedRectangle(cornerRadius: Theme.Radius.button)
-                    .fill(Color(hex: "1A2B22"))
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Theme.Colors.cardFill)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: Theme.Radius.button)
-                    .stroke(accentColor.opacity(0.2), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(accentColor.opacity(isSelected ? 0.6 : 0.15), lineWidth: isSelected ? 2 : 1)
             )
+            .shadow(color: accentColor.opacity(isSelected ? 0.3 : 0.1), radius: isSelected ? 20 : 12, y: 8)
         }
-        .buttonStyle(ScaleButtonStyle())
+        .buttonStyle(TiltedCardButtonStyle())
+        .rotationEffect(.degrees(rotation))
+        .offset(offset)
+        .scaleEffect(isSelected ? 1.05 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+    }
+}
+
+struct TiltedCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
     }
 }

@@ -10,8 +10,6 @@ struct GameOverView: View {
             StarBackground()
 
             VStack(spacing: 0) {
-                NavigationHeader(gameType.rawValue)
-
                 Spacer()
 
                 CardView {
