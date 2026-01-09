@@ -8,16 +8,27 @@ struct MenuView: View {
         ZStack {
             StarBackground()
 
-            VStack {
+            VStack(spacing: 0) {
                 Spacer()
+
+                VStack(spacing: 8) {
+                    Text("Pick a game to continue")
+                        .font(Theme.Font.rounded(24, .bold))
+                        .foregroundStyle(Theme.Colors.textPrimary)
+
+                    Text("Easy")
+                        .font(Theme.Font.rounded(16))
+                        .foregroundStyle(Theme.Colors.textSecondary)
+                }
+
+                Spacer().frame(height: 40)
 
                 HStack(spacing: 16) {
                     TiltedGameCard(
                         icon: "brain.head.profile",
-                        title: "You vs AI",
-                        subtitle: "Race against\nthe machine",
+                        title: "YOU VS AI",
                         accentColor: Theme.Colors.accentBlue,
-                        rotation: -4,
+                        rotation: -5,
                         isSelected: selectedIndex == 0
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -30,10 +41,9 @@ struct MenuView: View {
 
                     TiltedGameCard(
                         icon: "textformat.abc",
-                        title: "Word Search",
-                        subtitle: "Find hidden\nwords",
+                        title: "WORD SEARCH",
                         accentColor: Theme.Colors.accentGreen,
-                        rotation: 4,
+                        rotation: 5,
                         isSelected: selectedIndex == 1
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -44,9 +54,12 @@ struct MenuView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 24)
 
                 Spacer()
+
+                CircleButton(systemName: "xmark", action: {}, tint: Theme.Colors.textSecondary)
+                    .padding(.bottom, 32)
             }
         }
         .onAppear {
@@ -58,7 +71,6 @@ struct MenuView: View {
 struct TiltedGameCard: View {
     let icon: String
     let title: String
-    let subtitle: String
     let accentColor: Color
     let rotation: Double
     let isSelected: Bool
@@ -66,48 +78,38 @@ struct TiltedGameCard: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 24) {
-                Spacer().frame(height: 20)
-
-                ZStack {
-                    Circle()
-                        .fill(accentColor.opacity(0.15))
-                        .frame(width: 90, height: 90)
-
-                    Image(systemName: icon)
-                        .font(.system(size: 40))
-                        .foregroundStyle(accentColor)
-                }
-
-                VStack(spacing: 8) {
-                    Text(title)
-                        .font(Theme.Font.rounded(20, .bold))
-                        .foregroundStyle(Theme.Colors.textPrimary)
-
-                    Text(subtitle)
-                        .font(Theme.Font.rounded(14))
-                        .foregroundStyle(Theme.Colors.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                }
+            VStack(spacing: 0) {
+                Text(title)
+                    .font(Theme.Font.rounded(13, .semibold))
+                    .foregroundStyle(Theme.Colors.textPrimary)
+                    .tracking(1)
+                    .padding(.top, 20)
+                    .padding(.horizontal, 12)
 
                 Spacer()
+
+                Image(systemName: icon)
+                    .font(.system(size: 64, weight: .light))
+                    .foregroundStyle(accentColor.opacity(0.7))
+
+                Spacer()
+                Spacer().frame(height: 30)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 280)
+            .frame(height: 360)
             .background(
-                RoundedRectangle(cornerRadius: 28)
+                RoundedRectangle(cornerRadius: 24)
                     .fill(Theme.Colors.cardFill)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 28)
-                    .stroke(accentColor.opacity(isSelected ? 0.6 : 0.12), lineWidth: isSelected ? 2 : 1)
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(accentColor.opacity(isSelected ? 0.5 : 0.1), lineWidth: 1)
             )
-            .shadow(color: accentColor.opacity(isSelected ? 0.25 : 0.08), radius: isSelected ? 20 : 12, y: 8)
+            .shadow(color: accentColor.opacity(isSelected ? 0.2 : 0.05), radius: isSelected ? 24 : 16, y: 10)
         }
         .buttonStyle(TiltedCardButtonStyle())
         .rotationEffect(.degrees(rotation))
-        .scaleEffect(isSelected ? 1.03 : 1.0)
+        .scaleEffect(isSelected ? 1.02 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
     }
 }
