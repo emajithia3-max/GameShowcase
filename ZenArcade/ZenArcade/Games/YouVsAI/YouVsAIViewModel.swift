@@ -86,13 +86,13 @@ final class YouVsAIViewModel {
             self.aiProgress = min(elapsed / self.targetAiTime, 1.0)
 
             if elapsed >= self.targetAiTime && self.selectedAnswer == nil {
-                self.aiWins()
+                self.handleAIWin()
                 timer.invalidate()
             }
         }
     }
 
-    private func aiWins() {
+    private func handleAIWin() {
         guard let equation = currentEquation else { return }
 
         let userTime: TimeInterval
