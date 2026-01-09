@@ -16,7 +16,7 @@ struct MenuView: View {
                         .font(Theme.Font.rounded(24, .bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
 
-                    Text("Easy")
+                    Text("Random difficulty")
                         .font(Theme.Font.rounded(16))
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }

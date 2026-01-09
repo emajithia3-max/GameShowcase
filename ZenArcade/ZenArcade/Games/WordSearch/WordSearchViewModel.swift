@@ -36,8 +36,9 @@ final class WordSearchViewModel {
         session.difficulty
     }
 
-    init(difficulty: GridDifficulty = .easy, seed: UInt64? = nil) {
-        self.session = WordSearchSession(difficulty: difficulty, seed: seed)
+    init(difficulty: GridDifficulty? = nil, seed: UInt64? = nil) {
+        let selectedDifficulty = difficulty ?? GridDifficulty.allCases.randomElement()!
+        self.session = WordSearchSession(difficulty: selectedDifficulty, seed: seed)
     }
 
     func startGame() {
