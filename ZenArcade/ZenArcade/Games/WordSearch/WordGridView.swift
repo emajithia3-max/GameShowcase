@@ -22,6 +22,28 @@ struct WordGridView: View {
             let originY = (geo.size.height - totalHeight) / 2
 
             ZStack {
+                ForEach(Array(foundWords), id: \.self) { word in
+                    if let positions = grid.getPositions(for: word) {
+                        SelectionOverlay(
+                            positions: positions,
+                            cellSize: cellSize,
+                            spacing: spacing,
+                            origin: CGPoint(x: originX, y: originY),
+                            color: Theme.Colors.accentGreen
+                        )
+                    }
+                }
+
+                if !currentSelection.isEmpty {
+                    SelectionOverlay(
+                        positions: currentSelection,
+                        cellSize: cellSize,
+                        spacing: spacing,
+                        origin: CGPoint(x: originX, y: originY),
+                        color: Theme.Colors.accentBlue
+                    )
+                }
+
                 ForEach(0..<grid.rows, id: \.self) { row in
                     ForEach(0..<grid.cols, id: \.self) { col in
                         let pos = GridPosition(row: row, col: col)
@@ -37,28 +59,6 @@ struct WordGridView: View {
                         .position(
                             x: originX + CGFloat(col) * (cellSize + spacing) + cellSize / 2,
                             y: originY + CGFloat(row) * (cellSize + spacing) + cellSize / 2
-                        )
-                    }
-                }
-
-                if !currentSelection.isEmpty {
-                    SelectionOverlay(
-                        positions: currentSelection,
-                        cellSize: cellSize,
-                        spacing: spacing,
-                        origin: CGPoint(x: originX, y: originY),
-                        color: Theme.Colors.accentBlue
-                    )
-                }
-
-                ForEach(Array(foundWords), id: \.self) { word in
-                    if let positions = grid.getPositions(for: word) {
-                        SelectionOverlay(
-                            positions: positions,
-                            cellSize: cellSize,
-                            spacing: spacing,
-                            origin: CGPoint(x: originX, y: originY),
-                            color: Theme.Colors.accentGreen
                         )
                     }
                 }
@@ -118,24 +118,9 @@ struct CellView: View {
     let isFound: Bool
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(backgroundColor)
-
-            Text(String(letter))
-                .font(Theme.Font.rounded(18, .bold))
-                .foregroundStyle(textColor)
-        }
-    }
-
-    private var backgroundColor: Color {
-        if isFound {
-            return Theme.Colors.accentGreen.opacity(0.2)
-        }
-        if isSelected {
-            return Theme.Colors.accentBlue.opacity(0.3)
-        }
-        return Color(hex: "1A2B22")
+        Text(String(letter))
+            .font(Theme.Font.rounded(18, .bold))
+            .foregroundStyle(textColor)
     }
 
     private var textColor: Color {
@@ -157,7 +142,7 @@ struct SelectionOverlay: View {
     let color: Color
 
     var body: some View {
-        if positions.count >= 2 {
+        if positions.count >= 1 {
             let start = positions.first!
             let end = positions.last!
 
@@ -171,24 +156,66 @@ struct SelectionOverlay: View {
                 y: origin.y + CGFloat(end.row) * (cellSize + spacing) + cellSize / 2
             )
 
-            Capsule()
-                .fill(color.opacity(0.25))
-                .frame(width: distance(from: startPoint, to: endPoint) + cellSize, height: cellSize)
-                .position(midpoint(from: startPoint, to: endPoint))
-                .rotationEffect(angle(from: startPoint, to: endPoint), anchor: .center)
-                .allowsHitTesting(false)
+            SelectionCapsulePath(
+                start: startPoint,
+                end: endPoint,
+                radius: cellSize / 2
+            )
+            .fill(color.opacity(0.3))
+            .allowsHitTesting(false)
         }
     }
+}
 
-    private func distance(from: CGPoint, to: CGPoint) -> CGFloat {
-        sqrt(pow(to.x - from.x, 2) + pow(to.y - from.y, 2))
-    }
+struct SelectionCapsulePath: Shape {
+    let start: CGPoint
+    let end: CGPoint
+    let radius: CGFloat
 
-    private func midpoint(from: CGPoint, to: CGPoint) -> CGPoint {
-        CGPoint(x: (from.x + to.x) / 2, y: (from.y + to.y) / 2)
-    }
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
 
-    private func angle(from: CGPoint, to: CGPoint) -> Angle {
-        .radians(atan2(to.y - from.y, to.x - from.x))
+        if start == end {
+            path.addEllipse(in: CGRect(
+                x: start.x - radius,
+                y: start.y - radius,
+                width: radius * 2,
+                height: radius * 2
+            ))
+            return path
+        }
+
+        let dx = end.x - start.x
+        let dy = end.y - start.y
+        let angle = atan2(dy, dx)
+        let perpAngle = angle + .pi / 2
+
+        let offsetX = cos(perpAngle) * radius
+        let offsetY = sin(perpAngle) * radius
+
+        let p1 = CGPoint(x: start.x + offsetX, y: start.y + offsetY)
+        let p2 = CGPoint(x: start.x - offsetX, y: start.y - offsetY)
+        let p3 = CGPoint(x: end.x - offsetX, y: end.y - offsetY)
+        let p4 = CGPoint(x: end.x + offsetX, y: end.y + offsetY)
+
+        path.move(to: p1)
+        path.addArc(
+            center: start,
+            radius: radius,
+            startAngle: .radians(Double(perpAngle)),
+            endAngle: .radians(Double(perpAngle + .pi)),
+            clockwise: false
+        )
+        path.addLine(to: p3)
+        path.addArc(
+            center: end,
+            radius: radius,
+            startAngle: .radians(Double(perpAngle + .pi)),
+            endAngle: .radians(Double(perpAngle)),
+            clockwise: false
+        )
+        path.addLine(to: p1)
+
+        return path
     }
 }

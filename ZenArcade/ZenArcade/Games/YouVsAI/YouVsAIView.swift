@@ -13,24 +13,38 @@ struct YouVsAIView: View {
                     viewModel.requestQuit()
                 })
 
-                Spacer().frame(height: Theme.Spacing.md)
+                Spacer().frame(height: Theme.Spacing.sm)
 
-                ScoreBar(userWins: viewModel.userWins, aiWins: viewModel.aiWins)
+                if let equation = viewModel.currentEquation {
+                    AIMirrorView(
+                        equation: equation,
+                        answers: viewModel.shuffledAnswers,
+                        progress: viewModel.aiProgress
+                    )
                     .padding(.horizontal, Theme.Spacing.lg)
-
-                Spacer().frame(height: Theme.Spacing.lg)
-
-                VStack(spacing: Theme.Spacing.xs) {
-                    Text("Solve faster than AI")
-                        .font(Theme.Font.rounded(14))
-                        .foregroundStyle(Theme.Colors.textSecondary)
-
-                    Text("Round \(viewModel.currentRound) of \(viewModel.totalRounds)")
-                        .font(Theme.Font.rounded(16, .medium))
-                        .foregroundStyle(Theme.Colors.textPrimary)
                 }
 
-                Spacer().frame(height: Theme.Spacing.sm)
+                Spacer().frame(height: Theme.Spacing.md)
+
+                ProgressDotsView(
+                    total: viewModel.totalRounds,
+                    current: viewModel.currentRound - 1,
+                    results: viewModel.session.roundResults
+                )
+
+                Spacer().frame(height: Theme.Spacing.xs)
+
+                VStack(spacing: 4) {
+                    Text("You vs AI")
+                        .font(Theme.Font.rounded(18, .bold))
+                        .foregroundStyle(Theme.Colors.textPrimary)
+
+                    Text("Solve 5 equations faster than AI.")
+                        .font(Theme.Font.rounded(14))
+                        .foregroundStyle(Theme.Colors.textSecondary)
+                }
+
+                Spacer().frame(height: Theme.Spacing.xs)
 
                 ProgressDotsView(
                     total: viewModel.totalRounds,
@@ -42,13 +56,15 @@ struct YouVsAIView: View {
 
                 CardView {
                     VStack(spacing: Theme.Spacing.lg) {
-                        AIProgressBar(progress: viewModel.aiProgress)
-
                         if let equation = viewModel.currentEquation {
-                            Text(equation.displayText)
-                                .font(Theme.Font.rounded(48, .bold))
-                                .foregroundStyle(Theme.Colors.textPrimary)
-                                .frame(height: 60)
+                            HStack(spacing: Theme.Spacing.sm) {
+                                Text(equation.displayText)
+                                    .font(Theme.Font.rounded(42, .bold))
+                                    .foregroundStyle(Theme.Colors.textPrimary)
+
+                                AnswerBox(isAnswered: viewModel.selectedAnswer != nil)
+                            }
+                            .frame(height: 56)
                         }
 
                         HStack(spacing: Theme.Spacing.sm) {
@@ -102,44 +118,79 @@ struct YouVsAIView: View {
     }
 }
 
-struct ScoreBar: View {
-    let userWins: Int
-    let aiWins: Int
+struct AIMirrorView: View {
+    let equation: Equation
+    let answers: [Int]
+    let progress: Double
 
     var body: some View {
-        HStack {
-            ScorePill(label: "YOU", score: userWins, color: Theme.Colors.accentGreen)
-            Spacer()
-            ScorePill(label: "AI", score: aiWins, color: Theme.Colors.accentRed)
+        VStack(spacing: Theme.Spacing.sm) {
+            HStack(spacing: Theme.Spacing.sm) {
+                ForEach(answers, id: \.self) { answer in
+                    Text("\(answer)")
+                        .font(Theme.Font.rounded(16, .semibold))
+                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.5))
+                        .frame(width: 50, height: 36)
+                        .background(
+                            RoundedRectangle(cornerRadius: Theme.Radius.small)
+                                .fill(Color.white.opacity(0.03))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Theme.Radius.small)
+                                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+                        )
+                }
+            }
+            .rotationEffect(.degrees(180))
+
+            HStack(spacing: Theme.Spacing.xs) {
+                Text(equation.displayText)
+                    .font(Theme.Font.rounded(28, .bold))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
+
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Theme.Colors.accentRed.opacity(0.4), lineWidth: 2)
+                    .frame(width: 36, height: 36)
+            }
+            .rotationEffect(.degrees(180))
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Color.white.opacity(0.05))
+                        .frame(height: 4)
+
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Theme.Colors.accentRed.opacity(0.6))
+                        .frame(width: geo.size.width * progress, height: 4)
+                        .animation(.linear(duration: 0.05), value: progress)
+                }
+            }
+            .frame(height: 4)
+            .padding(.horizontal, Theme.Spacing.lg)
         }
+        .padding(Theme.Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: Theme.Radius.card)
+                .fill(Color.white.opacity(0.02))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Theme.Radius.card)
+                .stroke(Color.white.opacity(0.04), lineWidth: 1)
+        )
     }
 }
 
-struct ScorePill: View {
-    let label: String
-    let score: Int
-    let color: Color
+struct AnswerBox: View {
+    let isAnswered: Bool
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.xs) {
-            Text(label)
-                .font(Theme.Font.rounded(12, .medium))
-                .foregroundStyle(Theme.Colors.textSecondary)
-
-            Text("\(score)")
-                .font(Theme.Font.rounded(18, .bold))
-                .foregroundStyle(color)
-        }
-        .padding(.horizontal, Theme.Spacing.md)
-        .padding(.vertical, Theme.Spacing.xs)
-        .background(
-            Capsule()
-                .fill(color.opacity(0.1))
-        )
-        .overlay(
-            Capsule()
-                .stroke(color.opacity(0.3), lineWidth: 1)
-        )
+        RoundedRectangle(cornerRadius: 8)
+            .stroke(
+                isAnswered ? Theme.Colors.accentGreen : Theme.Colors.accentBlue,
+                lineWidth: 2
+            )
+            .frame(width: 48, height: 48)
     }
 }
 
@@ -165,41 +216,6 @@ struct ProgressDotsView: View {
             return Theme.Colors.accentBlue
         }
         return Theme.Colors.textSecondary.opacity(0.3)
-    }
-}
-
-struct AIProgressBar: View {
-    let progress: Double
-
-    var body: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Text("AI solving...")
-                    .font(Theme.Font.rounded(12))
-                    .foregroundStyle(Theme.Colors.textSecondary)
-                Spacer()
-            }
-
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.white.opacity(0.1))
-                        .frame(height: 6)
-
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(
-                            LinearGradient(
-                                colors: [Theme.Colors.accentRed.opacity(0.6), Theme.Colors.accentRed],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
-                        .frame(width: geo.size.width * progress, height: 6)
-                        .animation(.linear(duration: 0.05), value: progress)
-                }
-            }
-            .frame(height: 6)
-        }
     }
 }
 
