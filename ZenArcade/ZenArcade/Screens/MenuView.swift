@@ -11,31 +11,13 @@ struct MenuView: View {
             VStack {
                 Spacer()
 
-                ZStack {
-                    TiltedGameCard(
-                        icon: "textformat.abc",
-                        title: "Word Search",
-                        subtitle: "Find hidden words",
-                        accentColor: Theme.Colors.accentGreen,
-                        rotation: -8,
-                        offset: CGSize(width: -20, height: 40),
-                        isSelected: selectedIndex == 1
-                    ) {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedIndex = 1
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            router.navigate(to: .wordSearch)
-                        }
-                    }
-
+                HStack(spacing: 16) {
                     TiltedGameCard(
                         icon: "brain.head.profile",
                         title: "You vs AI",
-                        subtitle: "Race against the machine",
+                        subtitle: "Race against\nthe machine",
                         accentColor: Theme.Colors.accentBlue,
-                        rotation: 6,
-                        offset: CGSize(width: 15, height: -30),
+                        rotation: -4,
                         isSelected: selectedIndex == 0
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
@@ -45,8 +27,24 @@ struct MenuView: View {
                             router.navigate(to: .youVsAI)
                         }
                     }
+
+                    TiltedGameCard(
+                        icon: "textformat.abc",
+                        title: "Word Search",
+                        subtitle: "Find hidden\nwords",
+                        accentColor: Theme.Colors.accentGreen,
+                        rotation: 4,
+                        isSelected: selectedIndex == 1
+                    ) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            selectedIndex = 1
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            router.navigate(to: .wordSearch)
+                        }
+                    }
                 }
-                .frame(height: 380)
+                .padding(.horizontal, 20)
 
                 Spacer()
             }
@@ -63,48 +61,53 @@ struct TiltedGameCard: View {
     let subtitle: String
     let accentColor: Color
     let rotation: Double
-    let offset: CGSize
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
+                Spacer().frame(height: 20)
+
                 ZStack {
                     Circle()
                         .fill(accentColor.opacity(0.15))
-                        .frame(width: 80, height: 80)
+                        .frame(width: 90, height: 90)
 
                     Image(systemName: icon)
-                        .font(.system(size: 36))
+                        .font(.system(size: 40))
                         .foregroundStyle(accentColor)
                 }
 
-                VStack(spacing: 6) {
+                VStack(spacing: 8) {
                     Text(title)
-                        .font(Theme.Font.rounded(24, .bold))
+                        .font(Theme.Font.rounded(20, .bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
 
                     Text(subtitle)
-                        .font(Theme.Font.rounded(15))
+                        .font(Theme.Font.rounded(14))
                         .foregroundStyle(Theme.Colors.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
                 }
+
+                Spacer()
             }
-            .frame(width: 200, height: 220)
+            .frame(maxWidth: .infinity)
+            .frame(height: 280)
             .background(
-                RoundedRectangle(cornerRadius: 24)
+                RoundedRectangle(cornerRadius: 28)
                     .fill(Theme.Colors.cardFill)
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 24)
-                    .stroke(accentColor.opacity(isSelected ? 0.6 : 0.15), lineWidth: isSelected ? 2 : 1)
+                RoundedRectangle(cornerRadius: 28)
+                    .stroke(accentColor.opacity(isSelected ? 0.6 : 0.12), lineWidth: isSelected ? 2 : 1)
             )
-            .shadow(color: accentColor.opacity(isSelected ? 0.3 : 0.1), radius: isSelected ? 20 : 12, y: 8)
+            .shadow(color: accentColor.opacity(isSelected ? 0.25 : 0.08), radius: isSelected ? 20 : 12, y: 8)
         }
         .buttonStyle(TiltedCardButtonStyle())
         .rotationEffect(.degrees(rotation))
-        .offset(offset)
-        .scaleEffect(isSelected ? 1.05 : 1.0)
+        .scaleEffect(isSelected ? 1.03 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
     }
 }
@@ -112,7 +115,7 @@ struct TiltedGameCard: View {
 struct TiltedCardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
             .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
     }
 }
