@@ -13,7 +13,7 @@ struct YouVsAIView: View {
                     viewModel.requestQuit()
                 })
 
-                Spacer().frame(height: Theme.Spacing.sm)
+                Spacer().frame(height: 24)
 
                 if let equation = viewModel.currentEquation {
                     AIMirrorView(
@@ -21,10 +21,10 @@ struct YouVsAIView: View {
                         answers: viewModel.shuffledAnswers,
                         progress: viewModel.aiProgress
                     )
-                    .padding(.horizontal, Theme.Spacing.lg)
+                    .padding(.horizontal, 24)
                 }
 
-                Spacer().frame(height: Theme.Spacing.md)
+                Spacer().frame(height: 32)
 
                 ProgressDotsView(
                     total: viewModel.totalRounds,
@@ -32,42 +32,34 @@ struct YouVsAIView: View {
                     results: viewModel.session.roundResults
                 )
 
-                Spacer().frame(height: Theme.Spacing.xs)
+                Spacer().frame(height: 16)
 
-                VStack(spacing: 4) {
+                VStack(spacing: 6) {
                     Text("You vs AI")
-                        .font(Theme.Font.rounded(18, .bold))
+                        .font(Theme.Font.rounded(20, .bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
 
                     Text("Solve 5 equations faster than AI.")
-                        .font(Theme.Font.rounded(14))
+                        .font(Theme.Font.rounded(15))
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }
 
-                Spacer().frame(height: Theme.Spacing.xs)
-
-                ProgressDotsView(
-                    total: viewModel.totalRounds,
-                    current: viewModel.currentRound - 1,
-                    results: viewModel.session.roundResults
-                )
-
-                Spacer().frame(height: Theme.Spacing.lg)
+                Spacer().frame(height: 40)
 
                 CardView {
-                    VStack(spacing: Theme.Spacing.lg) {
+                    VStack(spacing: 28) {
                         if let equation = viewModel.currentEquation {
                             HStack(spacing: Theme.Spacing.sm) {
                                 Text(equation.displayText)
-                                    .font(Theme.Font.rounded(42, .bold))
+                                    .font(Theme.Font.rounded(44, .bold))
                                     .foregroundStyle(Theme.Colors.textPrimary)
 
                                 AnswerBox(isAnswered: viewModel.selectedAnswer != nil)
                             }
-                            .frame(height: 56)
+                            .frame(height: 60)
                         }
 
-                        HStack(spacing: Theme.Spacing.sm) {
+                        HStack(spacing: Theme.Spacing.md) {
                             ForEach(viewModel.shuffledAnswers, id: \.self) { answer in
                                 AnswerButton(
                                     title: "\(answer)",
@@ -80,9 +72,9 @@ struct YouVsAIView: View {
                             }
                         }
                     }
-                    .padding(.vertical, Theme.Spacing.sm)
+                    .padding(.vertical, 20)
                 }
-                .padding(.horizontal, Theme.Spacing.lg)
+                .padding(.horizontal, 24)
                 .modifier(ShakeEffect(shakes: viewModel.isCorrectAnswer == false ? 2 : 0))
 
                 Spacer()
@@ -90,7 +82,7 @@ struct YouVsAIView: View {
                 CircleButton(systemName: "xmark", action: {
                     viewModel.requestQuit()
                 }, tint: Theme.Colors.accentRed)
-                .padding(.bottom, Theme.Spacing.lg)
+                .padding(.bottom, 32)
             }
         }
         .onAppear {
