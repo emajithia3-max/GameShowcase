@@ -113,14 +113,17 @@ struct NomiMirrorView: View {
     let questionProgress: Double
     let nomiFinished: Bool
 
+    private var nomiImage: String {
+        nomiFinished ? "nomi_fire" : "nomi_think"
+    }
+
     var body: some View {
         VStack(spacing: 16) {
             HStack(spacing: 12) {
-                Image("nomi")
+                Image(nomiImage)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
-                    .clipShape(Circle())
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Nomi")
@@ -185,12 +188,12 @@ struct DualProgressView: View {
     let nomiFinished: Bool
 
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 6) {
-                Text("Nomi")
-                    .font(Theme.Font.rounded(11, .medium))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
-                    .frame(width: 40, alignment: .trailing)
+        VStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image(nomiFinished ? "nomi_fire" : "nomi_smile")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
 
                 HStack(spacing: 6) {
                     ForEach(0..<total, id: \.self) { index in
@@ -200,14 +203,18 @@ struct DualProgressView: View {
                     }
                 }
 
-                Spacer().frame(width: 40)
+                Spacer().frame(width: 24)
             }
 
-            HStack(spacing: 6) {
-                Text("Me")
-                    .font(Theme.Font.rounded(11, .medium))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
-                    .frame(width: 40, alignment: .trailing)
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(Theme.Colors.selectionGreen.opacity(0.8))
+                    .frame(width: 24, height: 24)
+                    .overlay(
+                        Text("ME")
+                            .font(Theme.Font.rounded(8, .bold))
+                            .foregroundStyle(Theme.Colors.background)
+                    )
 
                 HStack(spacing: 6) {
                     ForEach(0..<total, id: \.self) { index in
@@ -217,7 +224,7 @@ struct DualProgressView: View {
                     }
                 }
 
-                Spacer().frame(width: 40)
+                Spacer().frame(width: 24)
             }
         }
     }

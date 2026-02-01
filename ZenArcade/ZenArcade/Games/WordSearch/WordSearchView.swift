@@ -11,24 +11,39 @@ struct WordSearchView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                VStack(spacing: 8) {
-                    Text("Find the following words in the grid:")
-                        .font(Theme.Font.rounded(15))
-                        .foregroundStyle(Theme.Colors.textSecondary)
+                HStack(alignment: .top) {
+                    Image("nomi_peek")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 44, height: 44)
+                        .opacity(0.8)
 
-                    if let word = viewModel.currentWord {
-                        Text(word)
-                            .font(Theme.Font.rounded(34, .bold))
-                            .foregroundStyle(Theme.Colors.textPrimary)
-                            .contentTransition(.numericText())
-                            .animation(.easeInOut, value: word)
+                    Spacer()
+
+                    VStack(spacing: 8) {
+                        Text("Find the words:")
+                            .font(Theme.Font.rounded(15))
+                            .foregroundStyle(Theme.Colors.textSecondary)
+
+                        if let word = viewModel.currentWord {
+                            Text(word)
+                                .font(Theme.Font.rounded(34, .bold))
+                                .foregroundStyle(Theme.Colors.textPrimary)
+                                .contentTransition(.numericText())
+                                .animation(.easeInOut, value: word)
+                        }
+
+                        Text(formatTime(viewModel.elapsedTime))
+                            .font(Theme.Font.rounded(16, .medium))
+                            .foregroundStyle(Theme.Colors.accentGreen)
+                            .monospacedDigit()
                     }
 
-                    Text(formatTime(viewModel.elapsedTime))
-                        .font(Theme.Font.rounded(16, .medium))
-                        .foregroundStyle(Theme.Colors.accentGreen)
-                        .monospacedDigit()
+                    Spacer()
+
+                    Spacer().frame(width: 44)
                 }
+                .padding(.horizontal, 20)
 
                 Spacer().frame(height: 28)
 

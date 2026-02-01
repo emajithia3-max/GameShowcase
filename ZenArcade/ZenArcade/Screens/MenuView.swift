@@ -25,7 +25,7 @@ struct MenuView: View {
 
                 HStack(spacing: 16) {
                     TiltedGameCard(
-                        imageName: "nomi",
+                        imageName: "nomi_fire",
                         title: "ME VS. NOMI",
                         accentColor: Theme.Colors.nomiGreen,
                         rotation: -5,
@@ -40,7 +40,7 @@ struct MenuView: View {
                     }
 
                     TiltedGameCard(
-                        icon: "textformat.abc",
+                        imageName: "nomi_meditate",
                         title: "WORD SEARCH",
                         accentColor: Theme.Colors.accentGreen,
                         rotation: 5,
