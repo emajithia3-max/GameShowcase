@@ -1,8 +1,9 @@
 import SwiftUI
 
-struct MenuView: View {
-    @Environment(AppRouter.self) private var router
+struct ZenArcadeMenuView: View {
+    @Environment(ZenArcadeRouter.self) private var router
     @State private var selectedIndex: Int? = nil
+    var onDismiss: () -> Void = {}
 
     var body: some View {
         ZStack {
@@ -13,12 +14,12 @@ struct MenuView: View {
 
                 VStack(spacing: 8) {
                     Text("Pick a game to continue")
-                        .font(Theme.Font.rounded(24, .bold))
-                        .foregroundStyle(Theme.Colors.textPrimary)
+                        .font(ZenArcadeTheme.Font.rounded(24, .bold))
+                        .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
 
                     Text("Random difficulty")
-                        .font(Theme.Font.rounded(16))
-                        .foregroundStyle(Theme.Colors.textSecondary)
+                        .font(ZenArcadeTheme.Font.rounded(16))
+                        .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
                 }
 
                 Spacer().frame(height: 40)
@@ -26,7 +27,7 @@ struct MenuView: View {
                 HStack(spacing: 16) {
                     GameCard(
                         title: "ME VS. NOMI",
-                        accentColor: Theme.Colors.nomiGreen,
+                        accentColor: ZenArcadeTheme.Colors.nomiGreen,
                         rotation: -5,
                         isSelected: selectedIndex == 0,
                         action: {
@@ -43,7 +44,7 @@ struct MenuView: View {
 
                     GameCard(
                         title: "WORD SEARCH",
-                        accentColor: Theme.Colors.accentGreen,
+                        accentColor: ZenArcadeTheme.Colors.accentGreen,
                         rotation: 5,
                         isSelected: selectedIndex == 1,
                         action: {
@@ -62,7 +63,7 @@ struct MenuView: View {
 
                 Spacer()
 
-                CircleButton(systemName: "xmark", action: {}, tint: Theme.Colors.textSecondary)
+                ZenArcadeCircleButton(systemName: "xmark", action: onDismiss, tint: ZenArcadeTheme.Colors.textSecondary)
                     .padding(.bottom, 32)
             }
         }
@@ -79,17 +80,17 @@ struct MeVsNomiCardContent: View {
 
             HStack(spacing: 12) {
                 Circle()
-                    .fill(Theme.Colors.selectionGreen)
+                    .fill(ZenArcadeTheme.Colors.selectionGreen)
                     .frame(width: 44, height: 44)
                     .overlay(
                         Text("ME")
-                            .font(Theme.Font.rounded(12, .bold))
-                            .foregroundStyle(Theme.Colors.background)
+                            .font(ZenArcadeTheme.Font.rounded(12, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.background)
                     )
 
                 Text("VS")
-                    .font(Theme.Font.rounded(16, .black))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.5))
+                    .font(ZenArcadeTheme.Font.rounded(16, .black))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.5))
 
                 Image("nomi_fire")
                     .resizable()
@@ -104,12 +105,12 @@ struct MeVsNomiCardContent: View {
 
             VStack(spacing: 6) {
                 Text("7 × 8 = ?")
-                    .font(Theme.Font.rounded(22, .bold))
-                    .foregroundStyle(Theme.Colors.textPrimary.opacity(0.9))
+                    .font(ZenArcadeTheme.Font.rounded(22, .bold))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textPrimary.opacity(0.9))
 
                 Text("Race to solve!")
-                    .font(Theme.Font.rounded(13))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+                    .font(ZenArcadeTheme.Font.rounded(13))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.6))
             }
 
             Spacer()
@@ -131,19 +132,19 @@ struct WordSearchCardContent: View {
                 HStack(spacing: 3) {
                     ForEach(["C", "A", "L", "M"], id: \.self) { letter in
                         Text(letter)
-                            .font(Theme.Font.rounded(16, .bold))
-                            .foregroundStyle(Theme.Colors.foundGreen)
+                            .font(ZenArcadeTheme.Font.rounded(16, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.foundGreen)
                             .frame(width: 28, height: 32)
                             .background(
                                 RoundedRectangle(cornerRadius: 6)
-                                    .fill(Theme.Colors.foundGreen.opacity(0.2))
+                                    .fill(ZenArcadeTheme.Colors.foundGreen.opacity(0.2))
                             )
                     }
                 }
 
                 Text("Find hidden words")
-                    .font(Theme.Font.rounded(13))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+                    .font(ZenArcadeTheme.Font.rounded(13))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.6))
             }
 
             Spacer()
@@ -163,8 +164,8 @@ struct GameCard<Content: View>: View {
         Button(action: action) {
             VStack(spacing: 0) {
                 Text(title)
-                    .font(Theme.Font.rounded(13, .semibold))
-                    .foregroundStyle(Theme.Colors.textPrimary)
+                    .font(ZenArcadeTheme.Font.rounded(13, .semibold))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
                     .tracking(1)
                     .padding(.top, 20)
                     .padding(.horizontal, 12)
@@ -180,7 +181,7 @@ struct GameCard<Content: View>: View {
             .frame(height: 360)
             .background(
                 RoundedRectangle(cornerRadius: 24)
-                    .fill(Theme.Colors.cardFill)
+                    .fill(ZenArcadeTheme.Colors.cardFill)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 24)

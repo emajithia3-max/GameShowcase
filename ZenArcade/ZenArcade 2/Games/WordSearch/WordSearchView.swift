@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct WordSearchView: View {
-    @Environment(AppRouter.self) private var router
+    @Environment(ZenArcadeRouter.self) private var router
     @State private var viewModel = WordSearchViewModel()
 
     var body: some View {
@@ -22,20 +22,20 @@ struct WordSearchView: View {
 
                     VStack(spacing: 8) {
                         Text("Find the words:")
-                            .font(Theme.Font.rounded(15))
-                            .foregroundStyle(Theme.Colors.textSecondary)
+                            .font(ZenArcadeTheme.Font.rounded(15))
+                            .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
 
                         if let word = viewModel.currentWord {
                             Text(word)
-                                .font(Theme.Font.rounded(34, .bold))
-                                .foregroundStyle(Theme.Colors.textPrimary)
+                                .font(ZenArcadeTheme.Font.rounded(34, .bold))
+                                .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
                                 .contentTransition(.numericText())
                                 .animation(.easeInOut, value: word)
                         }
 
                         Text(formatTime(viewModel.elapsedTime))
-                            .font(Theme.Font.rounded(16, .medium))
-                            .foregroundStyle(Theme.Colors.accentGreen)
+                            .font(ZenArcadeTheme.Font.rounded(16, .medium))
+                            .foregroundStyle(ZenArcadeTheme.Colors.accentGreen)
                             .monospacedDigit()
                     }
 
@@ -73,9 +73,9 @@ struct WordSearchView: View {
 
                 Spacer()
 
-                CircleButton(systemName: "xmark", action: {
+                ZenArcadeCircleButton(systemName: "xmark", action: {
                     viewModel.requestQuit()
-                }, tint: Theme.Colors.accentRed)
+                }, tint: ZenArcadeTheme.Colors.accentRed)
                 .padding(.bottom, 32)
             }
         }
@@ -120,7 +120,7 @@ struct WordProgressView: View {
     let foundWords: Set<String>
 
     var body: some View {
-        VStack(spacing: Theme.Spacing.xs) {
+        VStack(spacing: ZenArcadeTheme.Spacing.xs) {
             ForEach(words, id: \.self) { word in
                 WordProgressBar(
                     word: word,
@@ -136,10 +136,10 @@ struct WordProgressBar: View {
     let isFound: Bool
 
     var body: some View {
-        HStack(spacing: Theme.Spacing.sm) {
+        HStack(spacing: ZenArcadeTheme.Spacing.sm) {
             Text(word)
-                .font(Theme.Font.rounded(14, .medium))
-                .foregroundStyle(isFound ? Theme.Colors.accentGreen : Theme.Colors.textSecondary)
+                .font(ZenArcadeTheme.Font.rounded(14, .medium))
+                .foregroundStyle(isFound ? ZenArcadeTheme.Colors.accentGreen : ZenArcadeTheme.Colors.textSecondary)
                 .frame(width: 80, alignment: .leading)
 
             GeometryReader { geo in
@@ -149,7 +149,7 @@ struct WordProgressBar: View {
                         .frame(height: 8)
 
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Theme.Colors.accentGreen)
+                        .fill(ZenArcadeTheme.Colors.accentGreen)
                         .frame(width: isFound ? geo.size.width : 0, height: 8)
                         .animation(.spring(duration: 0.3), value: isFound)
                 }
@@ -158,7 +158,7 @@ struct WordProgressBar: View {
 
             Image(systemName: isFound ? "checkmark.circle.fill" : "circle")
                 .font(.system(size: 16))
-                .foregroundStyle(isFound ? Theme.Colors.accentGreen : Theme.Colors.textSecondary.opacity(0.3))
+                .foregroundStyle(isFound ? ZenArcadeTheme.Colors.accentGreen : ZenArcadeTheme.Colors.textSecondary.opacity(0.3))
         }
     }
 }

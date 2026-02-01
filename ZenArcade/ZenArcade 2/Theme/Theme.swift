@@ -1,9 +1,9 @@
 import SwiftUI
 
-enum Theme {
+enum ZenArcadeTheme {
     enum Colors {
         static let background = Color(hex: "0B140F")
-        static let cardFill = Color(hex: "0F1C15", alpha: 0.85)
+        static let cardFill = Color(hex: "0F1C15")
         static let cardStroke = Color.white.opacity(0.06)
         static let textPrimary = Color.white
         static let textSecondary = Color.white.opacity(0.65)

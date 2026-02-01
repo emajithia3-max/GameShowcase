@@ -113,7 +113,7 @@ final class WordSearchViewModel {
         timer?.invalidate()
     }
 
-    func getGameResult() -> GameResult {
+    func getGameResult() -> ZenArcadeGameResult {
         var stats: [String: String] = [:]
         stats["Difficulty"] = difficulty.rawValue.capitalized
         stats["Time"] = formatTime(session.elapsedTime)
@@ -123,7 +123,7 @@ final class WordSearchViewModel {
             stats["Your Best"] = formatTime(best)
         }
 
-        return GameResult(
+        return ZenArcadeGameResult(
             won: session.isComplete,
             score: session.foundWords.count,
             totalTime: session.elapsedTime,

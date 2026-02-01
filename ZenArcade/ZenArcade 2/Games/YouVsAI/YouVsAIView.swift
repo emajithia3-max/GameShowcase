@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct YouVsAIView: View {
-    @Environment(AppRouter.self) private var router
+    @Environment(ZenArcadeRouter.self) private var router
     @State private var viewModel = YouVsAIViewModel()
 
     var body: some View {
@@ -34,12 +34,12 @@ struct YouVsAIView: View {
 
                 VStack(spacing: 6) {
                     Text("Me vs. Nomi")
-                        .font(Theme.Font.rounded(20, .bold))
-                        .foregroundStyle(Theme.Colors.textPrimary)
+                        .font(ZenArcadeTheme.Font.rounded(20, .bold))
+                        .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
 
                     Text("Solve 5 equations faster than Nomi!")
-                        .font(Theme.Font.rounded(15))
-                        .foregroundStyle(Theme.Colors.textSecondary)
+                        .font(ZenArcadeTheme.Font.rounded(15))
+                        .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
                 }
 
                 Spacer().frame(height: 40)
@@ -47,19 +47,19 @@ struct YouVsAIView: View {
                 CardView {
                     VStack(spacing: 28) {
                         if let equation = viewModel.currentEquation {
-                            HStack(spacing: Theme.Spacing.sm) {
+                            HStack(spacing: ZenArcadeTheme.Spacing.sm) {
                                 Text(equation.displayText)
-                                    .font(Theme.Font.rounded(44, .bold))
-                                    .foregroundStyle(Theme.Colors.textPrimary)
+                                    .font(ZenArcadeTheme.Font.rounded(44, .bold))
+                                    .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
 
                                 AnswerBox(isAnswered: viewModel.selectedAnswer != nil)
                             }
                             .frame(height: 60)
                         }
 
-                        HStack(spacing: Theme.Spacing.md) {
+                        HStack(spacing: ZenArcadeTheme.Spacing.md) {
                             ForEach(viewModel.shuffledAnswers, id: \.self) { answer in
-                                AnswerButton(
+                                ZenArcadeAnswerButton(
                                     title: "\(answer)",
                                     action: {
                                         viewModel.selectAnswer(answer)
@@ -77,9 +77,9 @@ struct YouVsAIView: View {
 
                 Spacer()
 
-                CircleButton(systemName: "xmark", action: {
+                ZenArcadeCircleButton(systemName: "xmark", action: {
                     viewModel.requestQuit()
-                }, tint: Theme.Colors.accentRed)
+                }, tint: ZenArcadeTheme.Colors.accentRed)
                 .padding(.bottom, 32)
             }
         }
@@ -127,26 +127,26 @@ struct NomiMirrorView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Nomi")
-                        .font(Theme.Font.rounded(16, .semibold))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.7))
+                        .font(ZenArcadeTheme.Font.rounded(16, .semibold))
+                        .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.7))
 
                     if nomiFinished {
                         Text("FINISHED!")
-                            .font(Theme.Font.rounded(10, .bold))
-                            .foregroundStyle(Theme.Colors.nomiGreen)
+                            .font(ZenArcadeTheme.Font.rounded(10, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.nomiGreen)
                     }
                 }
             }
             .rotationEffect(.degrees(180))
 
-            HStack(spacing: Theme.Spacing.sm) {
+            HStack(spacing: ZenArcadeTheme.Spacing.sm) {
                 Text(nomiFinished ? "Done!" : equation.displayText)
-                    .font(Theme.Font.rounded(32, .bold))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
+                    .font(ZenArcadeTheme.Font.rounded(32, .bold))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.4))
 
                 if !nomiFinished {
                     RoundedRectangle(cornerRadius: 6)
-                        .stroke(Theme.Colors.nomiGreen.opacity(0.3), lineWidth: 2)
+                        .stroke(ZenArcadeTheme.Colors.nomiGreen.opacity(0.3), lineWidth: 2)
                         .frame(width: 40, height: 40)
                 }
             }
@@ -159,7 +159,7 @@ struct NomiMirrorView: View {
                         .frame(height: 4)
 
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(nomiFinished ? Theme.Colors.nomiGreen : Theme.Colors.nomiGreen.opacity(0.6))
+                        .fill(nomiFinished ? ZenArcadeTheme.Colors.nomiGreen : ZenArcadeTheme.Colors.nomiGreen.opacity(0.6))
                         .frame(width: geo.size.width * (nomiFinished ? 1.0 : questionProgress), height: 4)
                         .animation(.linear(duration: 0.05), value: questionProgress)
                 }
@@ -167,14 +167,14 @@ struct NomiMirrorView: View {
             .frame(height: 4)
         }
         .padding(.vertical, 16)
-        .padding(.horizontal, Theme.Spacing.md)
+        .padding(.horizontal, ZenArcadeTheme.Spacing.md)
         .background(
-            RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .fill(Theme.Colors.cardFill.opacity(0.5))
+            RoundedRectangle(cornerRadius: ZenArcadeTheme.Radius.card)
+                .fill(ZenArcadeTheme.Colors.cardFill.opacity(0.5))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .stroke(nomiFinished ? Theme.Colors.nomiGreen.opacity(0.3) : Theme.Colors.cardStroke, lineWidth: 1)
+            RoundedRectangle(cornerRadius: ZenArcadeTheme.Radius.card)
+                .stroke(nomiFinished ? ZenArcadeTheme.Colors.nomiGreen.opacity(0.3) : ZenArcadeTheme.Colors.cardStroke, lineWidth: 1)
         )
         .rotationEffect(.degrees(180))
     }
@@ -208,12 +208,12 @@ struct DualProgressView: View {
 
             HStack(spacing: 8) {
                 Circle()
-                    .fill(Theme.Colors.selectionGreen.opacity(0.8))
+                    .fill(ZenArcadeTheme.Colors.selectionGreen.opacity(0.8))
                     .frame(width: 24, height: 24)
                     .overlay(
                         Text("ME")
-                            .font(Theme.Font.rounded(8, .bold))
-                            .foregroundStyle(Theme.Colors.background)
+                            .font(ZenArcadeTheme.Font.rounded(8, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.background)
                     )
 
                 HStack(spacing: 6) {
@@ -231,20 +231,20 @@ struct DualProgressView: View {
 
     private func nomiColorForDot(at index: Int) -> Color {
         if index < nomiCurrent {
-            return Theme.Colors.nomiGreen
+            return ZenArcadeTheme.Colors.nomiGreen
         } else if index == nomiCurrent && !nomiFinished {
-            return Theme.Colors.nomiGreen.opacity(0.5)
+            return ZenArcadeTheme.Colors.nomiGreen.opacity(0.5)
         }
-        return Theme.Colors.textSecondary.opacity(0.2)
+        return ZenArcadeTheme.Colors.textSecondary.opacity(0.2)
     }
 
     private func userColorForDot(at index: Int) -> Color {
         if index < userResults.count {
-            return userResults[index].userAnsweredCorrectly ? Theme.Colors.selectionGreen : Theme.Colors.accentRed
+            return userResults[index].userAnsweredCorrectly ? ZenArcadeTheme.Colors.selectionGreen : ZenArcadeTheme.Colors.accentRed
         } else if index == userCurrent {
-            return Theme.Colors.selectionGreen.opacity(0.5)
+            return ZenArcadeTheme.Colors.selectionGreen.opacity(0.5)
         }
-        return Theme.Colors.textSecondary.opacity(0.2)
+        return ZenArcadeTheme.Colors.textSecondary.opacity(0.2)
     }
 }
 
@@ -254,7 +254,7 @@ struct AnswerBox: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 8)
             .stroke(
-                isAnswered ? Theme.Colors.nomiGreen : Theme.Colors.selectionGreen,
+                isAnswered ? ZenArcadeTheme.Colors.nomiGreen : ZenArcadeTheme.Colors.selectionGreen,
                 lineWidth: 2
             )
             .frame(width: 48, height: 48)

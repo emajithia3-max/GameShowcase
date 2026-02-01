@@ -172,7 +172,7 @@ final class YouVsAIViewModel {
         nomiTimer?.invalidate()
     }
 
-    func getGameResult() -> GameResult {
+    func getGameResult() -> ZenArcadeGameResult {
         let userFinishedFirst = session.currentRound >= session.totalRounds && !nomiFinished
         let allCorrect = session.correctAnswers == session.totalRounds
         let didWin = userFinishedFirst && allCorrect
@@ -195,7 +195,7 @@ final class YouVsAIViewModel {
             stats["Best"] = "\(best)/\(session.totalRounds)"
         }
 
-        return GameResult(
+        return ZenArcadeGameResult(
             won: didWin,
             score: session.correctAnswers,
             totalTime: userElapsedTime,

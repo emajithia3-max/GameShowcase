@@ -33,7 +33,7 @@ struct WordGridView: View {
                             cellSize: cellSize,
                             spacing: spacing,
                             origin: CGPoint(x: originX, y: originY),
-                            color: Theme.Colors.foundGreen
+                            color: ZenArcadeTheme.Colors.foundGreen
                         )
                     }
                 }
@@ -44,7 +44,7 @@ struct WordGridView: View {
                         cellSize: cellSize,
                         spacing: spacing,
                         origin: CGPoint(x: originX, y: originY),
-                        color: Theme.Colors.selectionGreen
+                        color: ZenArcadeTheme.Colors.selectionGreen
                     )
                 }
 
@@ -131,18 +131,18 @@ struct CellView: View {
 
     var body: some View {
         Text(String(letter))
-            .font(Theme.Font.rounded(18, .bold))
+            .font(ZenArcadeTheme.Font.rounded(18, .bold))
             .foregroundStyle(textColor)
     }
 
     private var textColor: Color {
         if isFound {
-            return Theme.Colors.foundGreen
+            return ZenArcadeTheme.Colors.foundGreen
         }
         if isSelected {
-            return Theme.Colors.selectionGreen
+            return ZenArcadeTheme.Colors.selectionGreen
         }
-        return Theme.Colors.textPrimary
+        return ZenArcadeTheme.Colors.textPrimary
     }
 }
 

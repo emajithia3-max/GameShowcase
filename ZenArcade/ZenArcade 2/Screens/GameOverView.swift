@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct GameOverView: View {
-    @Environment(AppRouter.self) private var router
-    let gameType: GameType
-    let result: GameResult
+struct ZenArcadeGameOverView: View {
+    @Environment(ZenArcadeRouter.self) private var router
+    let gameType: ZenArcadeGameType
+    let result: ZenArcadeGameResult
 
     private var nomiImage: String {
         switch gameType {
@@ -22,34 +22,34 @@ struct GameOverView: View {
                 Spacer()
 
                 CardView {
-                    VStack(spacing: Theme.Spacing.lg) {
-                        VStack(spacing: Theme.Spacing.sm) {
+                    VStack(spacing: ZenArcadeTheme.Spacing.lg) {
+                        VStack(spacing: ZenArcadeTheme.Spacing.sm) {
                             Image(nomiImage)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 80, height: 80)
 
                             Text(result.won ? "Victory!" : "Game Over")
-                                .font(Theme.Font.rounded(28, .bold))
-                                .foregroundStyle(Theme.Colors.textPrimary)
+                                .font(ZenArcadeTheme.Font.rounded(28, .bold))
+                                .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
 
                             Text(resultSubtitle)
-                                .font(Theme.Font.rounded(16))
-                                .foregroundStyle(Theme.Colors.textSecondary)
+                                .font(ZenArcadeTheme.Font.rounded(16))
+                                .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
                                 .multilineTextAlignment(.center)
                         }
 
                         Divider()
-                            .background(Theme.Colors.cardStroke)
+                            .background(ZenArcadeTheme.Colors.cardStroke)
 
-                        VStack(spacing: Theme.Spacing.sm) {
+                        VStack(spacing: ZenArcadeTheme.Spacing.sm) {
                             ForEach(Array(result.stats.sorted(by: { $0.key < $1.key })), id: \.key) { key, value in
-                                StatRow(label: key, value: value)
+                                ZenArcadeStatRow(label: key, value: value)
                             }
                         }
 
-                        VStack(spacing: Theme.Spacing.sm) {
-                            PrimaryButton(title: "Play Again", action: {
+                        VStack(spacing: ZenArcadeTheme.Spacing.sm) {
+                            ZenArcadePrimaryButton(title: "Play Again", action: {
                                 switch gameType {
                                 case .youVsAI:
                                     router.navigate(to: .youVsAI)
@@ -58,14 +58,14 @@ struct GameOverView: View {
                                 }
                             }, style: .accent)
 
-                            PrimaryButton(title: "Back to Menu", action: {
+                            ZenArcadePrimaryButton(title: "Back to Menu", action: {
                                 router.goToMenu()
                             })
                         }
                     }
-                    .padding(.vertical, Theme.Spacing.sm)
+                    .padding(.vertical, ZenArcadeTheme.Spacing.sm)
                 }
-                .padding(.horizontal, Theme.Spacing.lg)
+                .padding(.horizontal, ZenArcadeTheme.Spacing.lg)
 
                 Spacer()
             }
@@ -82,21 +82,21 @@ struct GameOverView: View {
     }
 }
 
-struct StatRow: View {
+struct ZenArcadeStatRow: View {
     let label: String
     let value: String
 
     var body: some View {
         HStack {
             Text(label)
-                .font(Theme.Font.rounded(14))
-                .foregroundStyle(Theme.Colors.textSecondary)
+                .font(ZenArcadeTheme.Font.rounded(14))
+                .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
 
             Spacer()
 
             Text(value)
-                .font(Theme.Font.rounded(16, .semibold))
-                .foregroundStyle(Theme.Colors.textPrimary)
+                .font(ZenArcadeTheme.Font.rounded(16, .semibold))
+                .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
         }
     }
 }
