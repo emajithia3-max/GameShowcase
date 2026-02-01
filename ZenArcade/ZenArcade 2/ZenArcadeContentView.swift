@@ -1,30 +1,31 @@
 import SwiftUI
 
-@main
-struct ZenArcadeApp: App {
-    @State private var router = AppRouter()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(router)
-                .preferredColorScheme(.dark)
-        }
+/// Wrapper view that initializes ZenArcade with its router and dismiss handling
+struct ZenArcadeView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var router = ZenArcadeRouter()
+    
+    var body: some View {
+        ZenArcadeContentView(onDismiss: { dismiss() })
+            .environment(router)
     }
 }
 
-struct ContentView: View {
-    @Environment(AppRouter.self) private var router
+/// Main content view for ZenArcade game suite
+struct ZenArcadeContentView: View {
+    @Environment(ZenArcadeRouter.self) private var router
+        var onDismiss: () -> Void = {}
+
 
     var body: some View {
         ZStack {
-            Theme.Colors.background
+            ZenArcadeTheme.Colors.background
                 .ignoresSafeArea()
-
+            
             Group {
                 switch router.currentRoute {
                 case .menu:
-                    MenuView()
+                    ZenArcadeMenuView()
                         .transition(.opacity)
                 case .youVsAI:
                     YouVsAIView()
@@ -33,7 +34,7 @@ struct ContentView: View {
                     WordSearchView()
                         .transition(.opacity)
                 case let .gameOver(gameType, result):
-                    GameOverView(gameType: gameType, result: result)
+                    ZenArcadeGameOverView(gameType: gameType, result: result)
                         .transition(.opacity)
                 }
             }
@@ -41,5 +42,3 @@ struct ContentView: View {
         .animation(.easeInOut(duration: 0.3), value: router.currentRoute)
     }
 }
-
-

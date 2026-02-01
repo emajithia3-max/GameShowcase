@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5EC9A41E2F2FBEA900312368 /* WordSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4162F2FBEA900312368 /* WordSearchViewModel.swift */; };
+		5EC9A41F2F2FBEA900312368 /* WordGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4182F2FBEA900312368 /* WordGridView.swift */; };
+		5EC9A4202F2FBEA900312368 /* WordSearchModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4172F2FBEA900312368 /* WordSearchModels.swift */; };
+		5EC9A4212F2FBEA900312368 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A40C2F2FBEA900312368 /* AppRouter.swift */; };
+		5EC9A4222F2FBEA900312368 /* YouVsAIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4122F2FBEA900312368 /* YouVsAIViewModel.swift */; };
+		5EC9A4232F2FBEA900312368 /* WordSelectionGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4192F2FBEA900312368 /* WordSelectionGesture.swift */; };
+		5EC9A4242F2FBEA900312368 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A40F2F2FBEA900312368 /* GameOverView.swift */; };
+		5EC9A4252F2FBEA900312368 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4082F2FBEA900312368 /* Theme.swift */; };
+		5EC9A4262F2FBEA900312368 /* ZenArcadeMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A40E2F2FBEA900312368 /* ZenArcadeMenuView.swift */; };
+		5EC9A4272F2FBEA900312368 /* WordLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A41A2F2FBEA900312368 /* WordLibrary.swift */; };
+		5EC9A4282F2FBEA900312368 /* YouVsAIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4112F2FBEA900312368 /* YouVsAIView.swift */; };
+		5EC9A4292F2FBEA900312368 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A40A2F2FBEA900312368 /* PrimaryButton.swift */; };
+		5EC9A42A2F2FBEA900312368 /* ZenArcadeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4072F2FBEA900312368 /* ZenArcadeContentView.swift */; };
+		5EC9A42B2F2FBEA900312368 /* YouVsAIGameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4132F2FBEA900312368 /* YouVsAIGameModels.swift */; };
+		5EC9A42C2F2FBEA900312368 /* WordSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC9A4152F2FBEA900312368 /* WordSearchView.swift */; };
 		A10000000000000000000001 /* ZenArcadeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* ZenArcadeApp.swift */; };
 		A10000000000000000000002 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* Theme.swift */; };
 		A10000000000000000000003 /* HexColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* HexColor.swift */; };
@@ -30,6 +45,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5EC9A4072F2FBEA900312368 /* ZenArcadeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenArcadeContentView.swift; sourceTree = "<group>"; };
+		5EC9A4082F2FBEA900312368 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		5EC9A40A2F2FBEA900312368 /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		5EC9A40C2F2FBEA900312368 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		5EC9A40E2F2FBEA900312368 /* ZenArcadeMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenArcadeMenuView.swift; sourceTree = "<group>"; };
+		5EC9A40F2F2FBEA900312368 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
+		5EC9A4112F2FBEA900312368 /* YouVsAIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouVsAIView.swift; sourceTree = "<group>"; };
+		5EC9A4122F2FBEA900312368 /* YouVsAIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouVsAIViewModel.swift; sourceTree = "<group>"; };
+		5EC9A4132F2FBEA900312368 /* YouVsAIGameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouVsAIGameModels.swift; sourceTree = "<group>"; };
+		5EC9A4152F2FBEA900312368 /* WordSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSearchView.swift; sourceTree = "<group>"; };
+		5EC9A4162F2FBEA900312368 /* WordSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSearchViewModel.swift; sourceTree = "<group>"; };
+		5EC9A4172F2FBEA900312368 /* WordSearchModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSearchModels.swift; sourceTree = "<group>"; };
+		5EC9A4182F2FBEA900312368 /* WordGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordGridView.swift; sourceTree = "<group>"; };
+		5EC9A4192F2FBEA900312368 /* WordSelectionGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordSelectionGesture.swift; sourceTree = "<group>"; };
+		5EC9A41A2F2FBEA900312368 /* WordLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordLibrary.swift; sourceTree = "<group>"; };
 		A20000000000000000000001 /* ZenArcadeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZenArcadeApp.swift; sourceTree = "<group>"; };
 		A20000000000000000000002 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		A20000000000000000000003 /* HexColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HexColor.swift; sourceTree = "<group>"; };
@@ -64,9 +94,88 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5EC9A4092F2FBEA900312368 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A4082F2FBEA900312368 /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		5EC9A40B2F2FBEA900312368 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A40A2F2FBEA900312368 /* PrimaryButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		5EC9A40D2F2FBEA900312368 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A40C2F2FBEA900312368 /* AppRouter.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		5EC9A4102F2FBEA900312368 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A40E2F2FBEA900312368 /* ZenArcadeMenuView.swift */,
+				5EC9A40F2F2FBEA900312368 /* GameOverView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		5EC9A4142F2FBEA900312368 /* YouVsAI */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A4112F2FBEA900312368 /* YouVsAIView.swift */,
+				5EC9A4122F2FBEA900312368 /* YouVsAIViewModel.swift */,
+				5EC9A4132F2FBEA900312368 /* YouVsAIGameModels.swift */,
+			);
+			path = YouVsAI;
+			sourceTree = "<group>";
+		};
+		5EC9A41B2F2FBEA900312368 /* WordSearch */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A4152F2FBEA900312368 /* WordSearchView.swift */,
+				5EC9A4162F2FBEA900312368 /* WordSearchViewModel.swift */,
+				5EC9A4172F2FBEA900312368 /* WordSearchModels.swift */,
+				5EC9A4182F2FBEA900312368 /* WordGridView.swift */,
+				5EC9A4192F2FBEA900312368 /* WordSelectionGesture.swift */,
+				5EC9A41A2F2FBEA900312368 /* WordLibrary.swift */,
+			);
+			path = WordSearch;
+			sourceTree = "<group>";
+		};
+		5EC9A41C2F2FBEA900312368 /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A4142F2FBEA900312368 /* YouVsAI */,
+				5EC9A41B2F2FBEA900312368 /* WordSearch */,
+			);
+			path = Games;
+			sourceTree = "<group>";
+		};
+		5EC9A41D2F2FBEA900312368 /* ZenArcade 2 */ = {
+			isa = PBXGroup;
+			children = (
+				5EC9A4072F2FBEA900312368 /* ZenArcadeContentView.swift */,
+				5EC9A4092F2FBEA900312368 /* Theme */,
+				5EC9A40B2F2FBEA900312368 /* Components */,
+				5EC9A40D2F2FBEA900312368 /* Navigation */,
+				5EC9A4102F2FBEA900312368 /* Screens */,
+				5EC9A41C2F2FBEA900312368 /* Games */,
+			);
+			path = "ZenArcade 2";
+			sourceTree = "<group>";
+		};
 		A50000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				5EC9A41D2F2FBEA900312368 /* ZenArcade 2 */,
 				A50000000000000000000002 /* ZenArcade */,
 				A50000000000000000000003 /* Products */,
 			);
@@ -242,6 +351,21 @@
 				A10000000000000000000008 /* AppRouter.swift in Sources */,
 				A10000000000000000000009 /* MenuView.swift in Sources */,
 				A10000000000000000000010 /* GameOverView.swift in Sources */,
+				5EC9A41E2F2FBEA900312368 /* WordSearchViewModel.swift in Sources */,
+				5EC9A41F2F2FBEA900312368 /* WordGridView.swift in Sources */,
+				5EC9A4202F2FBEA900312368 /* WordSearchModels.swift in Sources */,
+				5EC9A4212F2FBEA900312368 /* AppRouter.swift in Sources */,
+				5EC9A4222F2FBEA900312368 /* YouVsAIViewModel.swift in Sources */,
+				5EC9A4232F2FBEA900312368 /* WordSelectionGesture.swift in Sources */,
+				5EC9A4242F2FBEA900312368 /* GameOverView.swift in Sources */,
+				5EC9A4252F2FBEA900312368 /* Theme.swift in Sources */,
+				5EC9A4262F2FBEA900312368 /* ZenArcadeMenuView.swift in Sources */,
+				5EC9A4272F2FBEA900312368 /* WordLibrary.swift in Sources */,
+				5EC9A4282F2FBEA900312368 /* YouVsAIView.swift in Sources */,
+				5EC9A4292F2FBEA900312368 /* PrimaryButton.swift in Sources */,
+				5EC9A42A2F2FBEA900312368 /* ZenArcadeContentView.swift in Sources */,
+				5EC9A42B2F2FBEA900312368 /* YouVsAIGameModels.swift in Sources */,
+				5EC9A42C2F2FBEA900312368 /* WordSearchView.swift in Sources */,
 				A10000000000000000000011 /* YouVsAIView.swift in Sources */,
 				A10000000000000000000012 /* YouVsAIViewModel.swift in Sources */,
 				A10000000000000000000013 /* YouVsAIGameModels.swift in Sources */,
@@ -384,6 +508,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = ZT56M637KS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -412,6 +537,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = ZT56M637KS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
