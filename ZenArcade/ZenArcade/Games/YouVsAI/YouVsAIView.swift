@@ -11,22 +11,23 @@ struct YouVsAIView: View {
             VStack(spacing: 0) {
                 Spacer().frame(height: 60)
 
-                if let equation = viewModel.currentEquation {
-                    AIMirrorView(
-                        equation: equation,
-                        answers: viewModel.shuffledAnswers,
-                        progress: viewModel.nomiProgress,
+                if let nomiEquation = viewModel.currentNomiEquation {
+                    NomiMirrorView(
+                        equation: nomiEquation,
+                        questionProgress: viewModel.nomiQuestionProgress,
                         nomiFinished: viewModel.nomiFinished
                     )
                     .padding(.horizontal, 24)
                 }
 
-                Spacer().frame(height: 32)
+                Spacer().frame(height: 24)
 
-                ProgressDotsView(
+                DualProgressView(
                     total: viewModel.totalRounds,
-                    current: viewModel.currentRound - 1,
-                    results: viewModel.session.roundResults
+                    userCurrent: viewModel.currentRound - 1,
+                    nomiCurrent: viewModel.nomiCurrentRound,
+                    userResults: viewModel.session.roundResults,
+                    nomiFinished: viewModel.nomiFinished
                 )
 
                 Spacer().frame(height: 16)
@@ -107,25 +108,24 @@ struct YouVsAIView: View {
     }
 }
 
-struct AIMirrorView: View {
+struct NomiMirrorView: View {
     let equation: Equation
-    let answers: [Int]
-    let progress: Double
+    let questionProgress: Double
     let nomiFinished: Bool
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             HStack(spacing: 12) {
                 Image("nomi")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 40, height: 40)
+                    .frame(width: 36, height: 36)
                     .clipShape(Circle())
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Nomi")
-                        .font(Theme.Font.rounded(18, .semibold))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+                        .font(Theme.Font.rounded(16, .semibold))
+                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.7))
 
                     if nomiFinished {
                         Text("FINISHED!")
@@ -136,49 +136,34 @@ struct AIMirrorView: View {
             }
             .rotationEffect(.degrees(180))
 
-            HStack(spacing: Theme.Spacing.md) {
-                ForEach(answers, id: \.self) { answer in
-                    Text("\(answer)")
-                        .font(Theme.Font.rounded(20, .bold))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
-                        .frame(width: 80, height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: Theme.Radius.button)
-                                .fill(Color.white.opacity(0.02))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: Theme.Radius.button)
-                                .stroke(Color.white.opacity(0.04), lineWidth: 1)
-                        )
+            HStack(spacing: Theme.Spacing.sm) {
+                Text(nomiFinished ? "Done!" : equation.displayText)
+                    .font(Theme.Font.rounded(32, .bold))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.4))
+
+                if !nomiFinished {
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Theme.Colors.nomiGreen.opacity(0.3), lineWidth: 2)
+                        .frame(width: 40, height: 40)
                 }
             }
-
-            HStack(spacing: Theme.Spacing.sm) {
-                Text(equation.displayText)
-                    .font(Theme.Font.rounded(44, .bold))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.35))
-
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Theme.Colors.nomiGreen.opacity(0.35), lineWidth: 2)
-                    .frame(width: 48, height: 48)
-            }
-            .frame(height: 60)
+            .frame(height: 50)
 
             GeometryReader { geo in
-                ZStack(alignment: .trailing) {
+                ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.white.opacity(0.05))
                         .frame(height: 4)
 
                     RoundedRectangle(cornerRadius: 3)
                         .fill(nomiFinished ? Theme.Colors.nomiGreen : Theme.Colors.nomiGreen.opacity(0.6))
-                        .frame(width: geo.size.width * progress, height: 4)
-                        .animation(.linear(duration: 0.05), value: progress)
+                        .frame(width: geo.size.width * (nomiFinished ? 1.0 : questionProgress), height: 4)
+                        .animation(.linear(duration: 0.05), value: questionProgress)
                 }
             }
             .frame(height: 4)
         }
-        .padding(.vertical, 20)
+        .padding(.vertical, 16)
         .padding(.horizontal, Theme.Spacing.md)
         .background(
             RoundedRectangle(cornerRadius: Theme.Radius.card)
@@ -192,6 +177,70 @@ struct AIMirrorView: View {
     }
 }
 
+struct DualProgressView: View {
+    let total: Int
+    let userCurrent: Int
+    let nomiCurrent: Int
+    let userResults: [RoundResult]
+    let nomiFinished: Bool
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 6) {
+                Text("Nomi")
+                    .font(Theme.Font.rounded(11, .medium))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+                    .frame(width: 40, alignment: .trailing)
+
+                HStack(spacing: 6) {
+                    ForEach(0..<total, id: \.self) { index in
+                        Circle()
+                            .fill(nomiColorForDot(at: index))
+                            .frame(width: 10, height: 10)
+                    }
+                }
+
+                Spacer().frame(width: 40)
+            }
+
+            HStack(spacing: 6) {
+                Text("Me")
+                    .font(Theme.Font.rounded(11, .medium))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+                    .frame(width: 40, alignment: .trailing)
+
+                HStack(spacing: 6) {
+                    ForEach(0..<total, id: \.self) { index in
+                        Circle()
+                            .fill(userColorForDot(at: index))
+                            .frame(width: 10, height: 10)
+                    }
+                }
+
+                Spacer().frame(width: 40)
+            }
+        }
+    }
+
+    private func nomiColorForDot(at index: Int) -> Color {
+        if index < nomiCurrent {
+            return Theme.Colors.nomiGreen
+        } else if index == nomiCurrent && !nomiFinished {
+            return Theme.Colors.nomiGreen.opacity(0.5)
+        }
+        return Theme.Colors.textSecondary.opacity(0.2)
+    }
+
+    private func userColorForDot(at index: Int) -> Color {
+        if index < userResults.count {
+            return userResults[index].userAnsweredCorrectly ? Theme.Colors.selectionGreen : Theme.Colors.accentRed
+        } else if index == userCurrent {
+            return Theme.Colors.selectionGreen.opacity(0.5)
+        }
+        return Theme.Colors.textSecondary.opacity(0.2)
+    }
+}
+
 struct AnswerBox: View {
     let isAnswered: Bool
 
@@ -202,31 +251,6 @@ struct AnswerBox: View {
                 lineWidth: 2
             )
             .frame(width: 48, height: 48)
-    }
-}
-
-struct ProgressDotsView: View {
-    let total: Int
-    let current: Int
-    let results: [RoundResult]
-
-    var body: some View {
-        HStack(spacing: Theme.Spacing.xs) {
-            ForEach(0..<total, id: \.self) { index in
-                Circle()
-                    .fill(colorForDot(at: index))
-                    .frame(width: 10, height: 10)
-            }
-        }
-    }
-
-    private func colorForDot(at index: Int) -> Color {
-        if index < results.count {
-            return results[index].userAnsweredCorrectly ? Theme.Colors.nomiGreen : Theme.Colors.accentRed
-        } else if index == current {
-            return Theme.Colors.nomiGreen.opacity(0.5)
-        }
-        return Theme.Colors.textSecondary.opacity(0.3)
     }
 }
 

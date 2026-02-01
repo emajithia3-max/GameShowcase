@@ -6,15 +6,18 @@ final class YouVsAIViewModel {
     private(set) var currentEquation: Equation?
     private(set) var shuffledAnswers: [Int] = []
     private(set) var gameStartTime: Date?
-    private(set) var nomiProgress: Double = 0
     private(set) var selectedAnswer: Int?
     private(set) var showingResult: Bool = false
     private(set) var nomiTimer: Timer?
-    private(set) var totalNomiTime: TimeInterval = 0
     private(set) var isComplete: Bool = false
     private(set) var showQuitConfirmation: Bool = false
-    private(set) var nomiFinished: Bool = false
     private(set) var userElapsedTime: TimeInterval = 0
+
+    private(set) var nomiCurrentRound: Int = 0
+    private(set) var nomiQuestionProgress: Double = 0
+    private(set) var nomiFinished: Bool = false
+    private var nomiQuestionStartTime: Date?
+    private var currentNomiQuestionTime: TimeInterval = 0
 
     var currentRound: Int {
         session.currentRound + 1
@@ -26,6 +29,11 @@ final class YouVsAIViewModel {
 
     var userCorrectCount: Int {
         session.correctAnswers
+    }
+
+    var currentNomiEquation: Equation? {
+        guard nomiCurrentRound < session.totalRounds else { return nil }
+        return session.nomiEquations[nomiCurrentRound]
     }
 
     var isCorrectAnswer: Bool? {
@@ -43,20 +51,12 @@ final class YouVsAIViewModel {
         isComplete = false
         nomiFinished = false
         userElapsedTime = 0
-
-        totalNomiTime = calculateTotalNomiTime()
+        nomiCurrentRound = 0
+        nomiQuestionProgress = 0
 
         gameStartTime = Date()
         startNomiTimer()
         startNextRound()
-    }
-
-    private func calculateTotalNomiTime() -> TimeInterval {
-        var total: TimeInterval = 0
-        for i in 1...session.totalRounds {
-            total += session.aiTimeForRound(i)
-        }
-        return total
     }
 
     func startNextRound() {
@@ -75,6 +75,9 @@ final class YouVsAIViewModel {
 
     private func startNomiTimer() {
         nomiTimer?.invalidate()
+        nomiQuestionStartTime = Date()
+        currentNomiQuestionTime = session.nomiTimes[nomiCurrentRound]
+
         let updateInterval: TimeInterval = 0.05
 
         nomiTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] timer in
@@ -84,17 +87,35 @@ final class YouVsAIViewModel {
             }
 
             guard let startTime = self.gameStartTime else { return }
-            let elapsed = Date().timeIntervalSince(startTime)
+            self.userElapsedTime = Date().timeIntervalSince(startTime)
 
-            self.userElapsedTime = elapsed
-            self.nomiProgress = min(elapsed / self.totalNomiTime, 1.0)
+            if self.nomiFinished { return }
 
-            if elapsed >= self.totalNomiTime && !self.nomiFinished {
-                self.nomiFinished = true
-                if !self.isComplete {
-                    self.triggerHaptic(.warning)
-                }
+            guard let questionStart = self.nomiQuestionStartTime else { return }
+            let questionElapsed = Date().timeIntervalSince(questionStart)
+
+            self.nomiQuestionProgress = min(questionElapsed / self.currentNomiQuestionTime, 1.0)
+
+            if questionElapsed >= self.currentNomiQuestionTime {
+                self.advanceNomi()
             }
+        }
+    }
+
+    private func advanceNomi() {
+        nomiCurrentRound += 1
+        nomiQuestionProgress = 0
+
+        if nomiCurrentRound >= session.totalRounds {
+            nomiFinished = true
+            triggerHaptic(.warning)
+
+            if session.currentRound >= session.totalRounds {
+                completeGame()
+            }
+        } else {
+            nomiQuestionStartTime = Date()
+            currentNomiQuestionTime = session.nomiTimes[nomiCurrentRound]
         }
     }
 
@@ -109,7 +130,7 @@ final class YouVsAIViewModel {
             round: session.currentRound + 1,
             userAnsweredCorrectly: isCorrect,
             userTime: userElapsedTime,
-            aiTime: totalNomiTime,
+            aiTime: 0,
             userWon: isCorrect
         )
 
@@ -118,7 +139,7 @@ final class YouVsAIViewModel {
 
         triggerHaptic(isCorrect ? .success : .error)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
             self?.advanceRound()
         }
     }
@@ -133,6 +154,7 @@ final class YouVsAIViewModel {
     }
 
     private func completeGame() {
+        guard !isComplete else { return }
         isComplete = true
         nomiTimer?.invalidate()
     }
@@ -151,16 +173,23 @@ final class YouVsAIViewModel {
     }
 
     func getGameResult() -> GameResult {
-        let userBeatNomi = userElapsedTime < totalNomiTime
+        let userFinishedFirst = session.currentRound >= session.totalRounds && !nomiFinished
         let allCorrect = session.correctAnswers == session.totalRounds
-        let didWin = userBeatNomi && allCorrect
+        let didWin = userFinishedFirst && allCorrect
 
         YouVsAIPersistence.recordRoundsWon(session.correctAnswers, total: session.totalRounds)
 
         var stats: [String: String] = [:]
         stats["Correct"] = "\(session.correctAnswers)/\(session.totalRounds)"
         stats["Your Time"] = String(format: "%.1fs", userElapsedTime)
-        stats["Nomi's Time"] = String(format: "%.1fs", totalNomiTime)
+
+        if didWin {
+            stats["Result"] = "You beat Nomi!"
+        } else if !allCorrect {
+            stats["Result"] = "Wrong answers"
+        } else {
+            stats["Result"] = "Nomi was faster"
+        }
 
         if let best = YouVsAIPersistence.bestRoundsWon {
             stats["Best"] = "\(best)/\(session.totalRounds)"
