@@ -74,136 +74,79 @@ struct MenuView: View {
 
 struct MeVsNomiCardContent: View {
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                HStack {
-                    Text("+")
-                        .font(Theme.Font.rounded(28, .bold))
-                        .foregroundStyle(Theme.Colors.nomiGreen.opacity(0.3))
-                    Spacer()
-                    Text("×")
-                        .font(Theme.Font.rounded(24, .bold))
-                        .foregroundStyle(Theme.Colors.nomiGreen.opacity(0.2))
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+        VStack(spacing: 16) {
+            Spacer()
 
-                Spacer()
+            HStack(spacing: 12) {
+                Circle()
+                    .fill(Theme.Colors.selectionGreen)
+                    .frame(width: 44, height: 44)
+                    .overlay(
+                        Text("ME")
+                            .font(Theme.Font.rounded(12, .bold))
+                            .foregroundStyle(Theme.Colors.background)
+                    )
 
-                HStack {
-                    Text("÷")
-                        .font(Theme.Font.rounded(22, .bold))
-                        .foregroundStyle(Theme.Colors.nomiGreen.opacity(0.2))
-                    Spacer()
-                    Text("−")
-                        .font(Theme.Font.rounded(30, .bold))
-                        .foregroundStyle(Theme.Colors.nomiGreen.opacity(0.25))
-                }
-                .padding(.horizontal, 20)
-                .padding(.bottom, 12)
-            }
+                Text("VS")
+                    .font(Theme.Font.rounded(16, .black))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.5))
 
-            VStack(spacing: 12) {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(Theme.Colors.selectionGreen.opacity(0.8))
-                        .frame(width: 36, height: 36)
-                        .overlay(
-                            Text("ME")
-                                .font(Theme.Font.rounded(10, .bold))
-                                .foregroundStyle(Theme.Colors.background)
-                        )
-
-                    Text("VS")
-                        .font(Theme.Font.rounded(14, .black))
-                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
-
-                    Image("nomi_fire")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                }
-
-                Image("nomi_think")
+                Image("nomi_fire")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 70, height: 70)
-
-                Text("5 + 3 = ?")
-                    .font(Theme.Font.rounded(18, .semibold))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.7))
+                    .frame(width: 44, height: 44)
             }
+
+            Image("nomi_fire")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
+
+            VStack(spacing: 6) {
+                Text("7 × 8 = ?")
+                    .font(Theme.Font.rounded(22, .bold))
+                    .foregroundStyle(Theme.Colors.textPrimary.opacity(0.9))
+
+                Text("Race to solve!")
+                    .font(Theme.Font.rounded(13))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+            }
+
+            Spacer()
         }
     }
 }
 
 struct WordSearchCardContent: View {
-    private let letters = ["F", "I", "N", "D", "W", "O", "R", "D", "S"]
-
     var body: some View {
-        ZStack {
-            VStack(spacing: 4) {
-                ForEach(0..<3, id: \.self) { row in
-                    HStack(spacing: 4) {
-                        ForEach(0..<3, id: \.self) { col in
-                            let index = row * 3 + col
-                            Text(letters[index])
-                                .font(Theme.Font.rounded(16, .medium))
-                                .foregroundStyle(Theme.Colors.accentGreen.opacity(index == 0 || index == 4 || index == 8 ? 0.5 : 0.15))
-                                .frame(width: 28, height: 28)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(Theme.Colors.accentGreen.opacity(0.1), lineWidth: 1)
-                                )
-                        }
-                    }
-                }
-            }
-            .offset(x: -30, y: -50)
-            .rotationEffect(.degrees(-8))
+        VStack(spacing: 16) {
+            Spacer()
 
-            VStack(spacing: 4) {
-                ForEach(0..<3, id: \.self) { row in
-                    HStack(spacing: 4) {
-                        ForEach(0..<3, id: \.self) { col in
-                            Text(["Z", "E", "N", "C", "A", "L", "M", "P", "E"][row * 3 + col])
-                                .font(Theme.Font.rounded(14, .medium))
-                                .foregroundStyle(Theme.Colors.accentGreen.opacity(0.12))
-                                .frame(width: 24, height: 24)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 3)
-                                        .stroke(Theme.Colors.accentGreen.opacity(0.08), lineWidth: 1)
-                                )
-                        }
-                    }
-                }
-            }
-            .offset(x: 35, y: 60)
-            .rotationEffect(.degrees(5))
+            Image("nomi_meditate")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
 
-            VStack(spacing: 12) {
-                Image("nomi_meditate")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 70, height: 70)
-
-                HStack(spacing: 2) {
-                    ForEach(["P", "E", "A", "C", "E"], id: \.self) { letter in
+            VStack(spacing: 8) {
+                HStack(spacing: 3) {
+                    ForEach(["C", "A", "L", "M"], id: \.self) { letter in
                         Text(letter)
-                            .font(Theme.Font.rounded(14, .bold))
-                            .foregroundStyle(Theme.Colors.accentGreen)
-                            .frame(width: 22, height: 26)
+                            .font(Theme.Font.rounded(16, .bold))
+                            .foregroundStyle(Theme.Colors.foundGreen)
+                            .frame(width: 28, height: 32)
                             .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(Theme.Colors.accentGreen.opacity(0.15))
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Theme.Colors.foundGreen.opacity(0.2))
                             )
                     }
                 }
 
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.5))
+                Text("Find hidden words")
+                    .font(Theme.Font.rounded(13))
+                    .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
             }
+
+            Spacer()
         }
     }
 }
