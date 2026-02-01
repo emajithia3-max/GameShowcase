@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @Observable
 final class WordSearchViewModel {
@@ -10,6 +11,9 @@ final class WordSearchViewModel {
     private(set) var showQuitConfirmation: Bool = false
 
     private var timer: Timer?
+    private let successFeedback = UINotificationFeedbackGenerator()
+    private let heavyImpact = UIImpactFeedbackGenerator(style: .heavy)
+    private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
 
     var currentWord: String? {
         let remaining = remainingWords
@@ -44,6 +48,13 @@ final class WordSearchViewModel {
     func startGame() {
         session.start()
         startTimer()
+        prepareHaptics()
+    }
+
+    private func prepareHaptics() {
+        successFeedback.prepare()
+        heavyImpact.prepare()
+        mediumImpact.prepare()
     }
 
     private func startTimer() {
@@ -61,7 +72,8 @@ final class WordSearchViewModel {
         if let foundWord = session.grid.validateSelection(positions) {
             if !session.foundWords.contains(foundWord) {
                 session.markFound(foundWord)
-                triggerHaptic(.success)
+                successFeedback.notificationOccurred(.success)
+                heavyImpact.impactOccurred()
 
                 if session.isComplete {
                     completeGame()
@@ -70,7 +82,7 @@ final class WordSearchViewModel {
                 }
             }
         } else if !positions.isEmpty {
-            triggerHaptic(.warning)
+            mediumImpact.impactOccurred()
         }
 
         currentSelection = []
@@ -130,8 +142,4 @@ final class WordSearchViewModel {
         return String(format: "%d.%ds", seconds, tenths)
     }
 
-    private func triggerHaptic(_ type: UINotificationFeedbackGenerator.FeedbackType) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(type)
-    }
 }

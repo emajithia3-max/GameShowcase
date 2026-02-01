@@ -26,7 +26,7 @@ struct WordSearchView: View {
 
                     Text(formatTime(viewModel.elapsedTime))
                         .font(Theme.Font.rounded(16, .medium))
-                        .foregroundStyle(Theme.Colors.accentBlue)
+                        .foregroundStyle(Theme.Colors.accentGreen)
                         .monospacedDigit()
                 }
 

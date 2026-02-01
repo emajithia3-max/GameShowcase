@@ -15,7 +15,8 @@ struct YouVsAIView: View {
                     AIMirrorView(
                         equation: equation,
                         answers: viewModel.shuffledAnswers,
-                        progress: viewModel.aiProgress
+                        progress: viewModel.nomiProgress,
+                        nomiFinished: viewModel.nomiFinished
                     )
                     .padding(.horizontal, 24)
                 }
@@ -31,11 +32,11 @@ struct YouVsAIView: View {
                 Spacer().frame(height: 16)
 
                 VStack(spacing: 6) {
-                    Text("You vs AI")
+                    Text("Me vs. Nomi")
                         .font(Theme.Font.rounded(20, .bold))
                         .foregroundStyle(Theme.Colors.textPrimary)
 
-                    Text("Solve 5 equations faster than AI.")
+                    Text("Solve 5 equations faster than Nomi!")
                         .font(Theme.Font.rounded(15))
                         .foregroundStyle(Theme.Colors.textSecondary)
                 }
@@ -110,9 +111,31 @@ struct AIMirrorView: View {
     let equation: Equation
     let answers: [Int]
     let progress: Double
+    let nomiFinished: Bool
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 20) {
+            HStack(spacing: 12) {
+                Image("nomi")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Nomi")
+                        .font(Theme.Font.rounded(18, .semibold))
+                        .foregroundStyle(Theme.Colors.textSecondary.opacity(0.6))
+
+                    if nomiFinished {
+                        Text("FINISHED!")
+                            .font(Theme.Font.rounded(10, .bold))
+                            .foregroundStyle(Theme.Colors.nomiGreen)
+                    }
+                }
+            }
+            .rotationEffect(.degrees(180))
+
             HStack(spacing: Theme.Spacing.md) {
                 ForEach(answers, id: \.self) { answer in
                     Text("\(answer)")
@@ -136,7 +159,7 @@ struct AIMirrorView: View {
                     .foregroundStyle(Theme.Colors.textSecondary.opacity(0.35))
 
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Theme.Colors.accentRed.opacity(0.35), lineWidth: 2)
+                    .stroke(Theme.Colors.nomiGreen.opacity(0.35), lineWidth: 2)
                     .frame(width: 48, height: 48)
             }
             .frame(height: 60)
@@ -148,7 +171,7 @@ struct AIMirrorView: View {
                         .frame(height: 4)
 
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(Theme.Colors.accentRed.opacity(0.5))
+                        .fill(nomiFinished ? Theme.Colors.nomiGreen : Theme.Colors.nomiGreen.opacity(0.6))
                         .frame(width: geo.size.width * progress, height: 4)
                         .animation(.linear(duration: 0.05), value: progress)
                 }
@@ -163,7 +186,7 @@ struct AIMirrorView: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: Theme.Radius.card)
-                .stroke(Theme.Colors.cardStroke, lineWidth: 1)
+                .stroke(nomiFinished ? Theme.Colors.nomiGreen.opacity(0.3) : Theme.Colors.cardStroke, lineWidth: 1)
         )
         .rotationEffect(.degrees(180))
     }
@@ -175,7 +198,7 @@ struct AnswerBox: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 8)
             .stroke(
-                isAnswered ? Theme.Colors.accentGreen : Theme.Colors.accentBlue,
+                isAnswered ? Theme.Colors.nomiGreen : Theme.Colors.selectionGreen,
                 lineWidth: 2
             )
             .frame(width: 48, height: 48)
@@ -199,9 +222,9 @@ struct ProgressDotsView: View {
 
     private func colorForDot(at index: Int) -> Color {
         if index < results.count {
-            return results[index].userWon ? Theme.Colors.accentGreen : Theme.Colors.accentRed
+            return results[index].userAnsweredCorrectly ? Theme.Colors.nomiGreen : Theme.Colors.accentRed
         } else if index == current {
-            return Theme.Colors.accentBlue
+            return Theme.Colors.nomiGreen.opacity(0.5)
         }
         return Theme.Colors.textSecondary.opacity(0.3)
     }

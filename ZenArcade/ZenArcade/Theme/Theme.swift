@@ -8,8 +8,11 @@ enum Theme {
         static let textPrimary = Color.white
         static let textSecondary = Color.white.opacity(0.65)
         static let accentBlue = Color(hex: "7FB8FF")
-        static let accentGreen = Color(hex: "1C9D1F")
+        static let accentGreen = Color(hex: "4ADE80")
         static let accentRed = Color(hex: "FF6B6B")
+        static let nomiGreen = Color(hex: "4ADE80")
+        static let selectionGreen = Color(hex: "86EFAC")
+        static let foundGreen = Color(hex: "22C55E")
     }
 
     enum Radius {

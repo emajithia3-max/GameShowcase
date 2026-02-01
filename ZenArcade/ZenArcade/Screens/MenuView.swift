@@ -25,9 +25,9 @@ struct MenuView: View {
 
                 HStack(spacing: 16) {
                     TiltedGameCard(
-                        icon: "brain.head.profile",
-                        title: "YOU VS AI",
-                        accentColor: Theme.Colors.accentBlue,
+                        imageName: "nomi",
+                        title: "ME VS. NOMI",
+                        accentColor: Theme.Colors.nomiGreen,
                         rotation: -5,
                         isSelected: selectedIndex == 0
                     ) {
@@ -69,7 +69,8 @@ struct MenuView: View {
 }
 
 struct TiltedGameCard: View {
-    let icon: String
+    var icon: String? = nil
+    var imageName: String? = nil
     let title: String
     let accentColor: Color
     let rotation: Double
@@ -88,9 +89,17 @@ struct TiltedGameCard: View {
 
                 Spacer()
 
-                Image(systemName: icon)
-                    .font(.system(size: 64, weight: .light))
-                    .foregroundStyle(accentColor.opacity(0.7))
+                if let imageName = imageName {
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                } else if let icon = icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 64, weight: .light))
+                        .foregroundStyle(accentColor.opacity(0.7))
+                }
 
                 Spacer()
                 Spacer().frame(height: 30)
