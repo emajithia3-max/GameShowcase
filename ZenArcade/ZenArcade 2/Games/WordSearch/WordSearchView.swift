@@ -11,24 +11,39 @@ struct WordSearchView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                VStack(spacing: 8) {
-                    Text("Find the following words in the grid:")
-                        .font(ZenArcadeTheme.Font.rounded(15))
-                        .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
+                HStack(alignment: .top) {
+                    Image("nomi_peek")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 44, height: 44)
+                        .opacity(0.8)
 
-                    if let word = viewModel.currentWord {
-                        Text(word)
-                            .font(ZenArcadeTheme.Font.rounded(34, .bold))
-                            .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
-                            .contentTransition(.numericText())
-                            .animation(.easeInOut, value: word)
+                    Spacer()
+
+                    VStack(spacing: 8) {
+                        Text("Find the words:")
+                            .font(ZenArcadeTheme.Font.rounded(15))
+                            .foregroundStyle(ZenArcadeTheme.Colors.textSecondary)
+
+                        if let word = viewModel.currentWord {
+                            Text(word)
+                                .font(ZenArcadeTheme.Font.rounded(34, .bold))
+                                .foregroundStyle(ZenArcadeTheme.Colors.textPrimary)
+                                .contentTransition(.numericText())
+                                .animation(.easeInOut, value: word)
+                        }
+
+                        Text(formatTime(viewModel.elapsedTime))
+                            .font(ZenArcadeTheme.Font.rounded(16, .medium))
+                            .foregroundStyle(ZenArcadeTheme.Colors.accentGreen)
+                            .monospacedDigit()
                     }
 
-                    Text(formatTime(viewModel.elapsedTime))
-                        .font(ZenArcadeTheme.Font.rounded(16, .medium))
-                        .foregroundStyle(ZenArcadeTheme.Colors.accentBlue)
-                        .monospacedDigit()
+                    Spacer()
+
+                    Spacer().frame(width: 44)
                 }
+                .padding(.horizontal, 20)
 
                 Spacer().frame(height: 28)
 

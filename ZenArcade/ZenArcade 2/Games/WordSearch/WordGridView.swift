@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct WordGridView: View {
     let grid: WordSearchGrid
@@ -10,9 +11,12 @@ struct WordGridView: View {
     @State private var metrics: GridMetrics?
     @State private var dragStart: GridPosition?
     @State private var dragCurrent: GridPosition?
+    @State private var lastSelectionCount: Int = 0
 
     private let cellSize: CGFloat = 36
     private let spacing: CGFloat = 4
+    private let selectionFeedback = UISelectionFeedbackGenerator()
+    private let impactFeedback = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         GeometryReader { geo in
@@ -29,7 +33,7 @@ struct WordGridView: View {
                             cellSize: cellSize,
                             spacing: spacing,
                             origin: CGPoint(x: originX, y: originY),
-                            color: ZenArcadeTheme.Colors.accentGreen
+                            color: ZenArcadeTheme.Colors.foundGreen
                         )
                     }
                 }
@@ -40,7 +44,7 @@ struct WordGridView: View {
                         cellSize: cellSize,
                         spacing: spacing,
                         origin: CGPoint(x: originX, y: originY),
-                        color: ZenArcadeTheme.Colors.accentBlue
+                        color: ZenArcadeTheme.Colors.selectionGreen
                     )
                 }
 
@@ -79,6 +83,8 @@ struct WordGridView: View {
                             if let start = m.gridPosition(for: value.startLocation) {
                                 dragStart = start
                                 dragCurrent = start
+                                lastSelectionCount = 1
+                                impactFeedback.impactOccurred()
                                 onSelectionChanged([start])
                             }
                         } else if let start = dragStart {
@@ -86,6 +92,11 @@ struct WordGridView: View {
                             if snapped != dragCurrent {
                                 dragCurrent = snapped
                                 let line = SelectionLine(start: start, end: snapped)
+                                let newCount = line.positions.count
+                                if newCount != lastSelectionCount {
+                                    selectionFeedback.selectionChanged()
+                                    lastSelectionCount = newCount
+                                }
                                 onSelectionChanged(line.positions)
                             }
                         }
@@ -97,6 +108,7 @@ struct WordGridView: View {
                         }
                         dragStart = nil
                         dragCurrent = nil
+                        lastSelectionCount = 0
                     }
             )
         }
@@ -125,10 +137,10 @@ struct CellView: View {
 
     private var textColor: Color {
         if isFound {
-            return ZenArcadeTheme.Colors.accentGreen
+            return ZenArcadeTheme.Colors.foundGreen
         }
         if isSelected {
-            return ZenArcadeTheme.Colors.accentBlue
+            return ZenArcadeTheme.Colors.selectionGreen
         }
         return ZenArcadeTheme.Colors.textPrimary
     }

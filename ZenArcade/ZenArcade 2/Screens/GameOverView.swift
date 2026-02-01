@@ -5,6 +5,15 @@ struct ZenArcadeGameOverView: View {
     let gameType: ZenArcadeGameType
     let result: ZenArcadeGameResult
 
+    private var nomiImage: String {
+        switch gameType {
+        case .youVsAI:
+            return result.won ? "nomi_love" : "nomi_fire"
+        case .wordSearch:
+            return result.won ? "nomi_love" : "nomi_smile"
+        }
+    }
+
     var body: some View {
         ZStack {
             StarBackground()
@@ -15,9 +24,10 @@ struct ZenArcadeGameOverView: View {
                 CardView {
                     VStack(spacing: ZenArcadeTheme.Spacing.lg) {
                         VStack(spacing: ZenArcadeTheme.Spacing.sm) {
-                            Image(systemName: result.won ? "trophy.fill" : "xmark.circle")
-                                .font(.system(size: 48))
-                                .foregroundStyle(result.won ? ZenArcadeTheme.Colors.accentGreen : ZenArcadeTheme.Colors.accentRed)
+                            Image(nomiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
 
                             Text(result.won ? "Victory!" : "Game Over")
                                 .font(ZenArcadeTheme.Font.rounded(28, .bold))
@@ -65,7 +75,7 @@ struct ZenArcadeGameOverView: View {
     private var resultSubtitle: String {
         switch gameType {
         case .youVsAI:
-            return result.won ? "You outsmarted the AI!" : "The AI was faster this time."
+            return result.won ? "You outsmarted Nomi!" : "Nomi was faster this time."
         case .wordSearch:
             return result.won ? "All words found!" : "Better luck next time!"
         }

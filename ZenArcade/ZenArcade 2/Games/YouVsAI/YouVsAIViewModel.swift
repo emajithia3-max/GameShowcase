@@ -5,14 +5,19 @@ final class YouVsAIViewModel {
     private(set) var session: YouVsAISession
     private(set) var currentEquation: Equation?
     private(set) var shuffledAnswers: [Int] = []
-    private(set) var roundStartTime: Date?
-    private(set) var aiProgress: Double = 0
+    private(set) var gameStartTime: Date?
     private(set) var selectedAnswer: Int?
     private(set) var showingResult: Bool = false
-    private(set) var aiTimer: Timer?
-    private(set) var targetAiTime: TimeInterval = 0
+    private(set) var nomiTimer: Timer?
     private(set) var isComplete: Bool = false
     private(set) var showQuitConfirmation: Bool = false
+    private(set) var userElapsedTime: TimeInterval = 0
+
+    private(set) var nomiCurrentRound: Int = 0
+    private(set) var nomiQuestionProgress: Double = 0
+    private(set) var nomiFinished: Bool = false
+    private var nomiQuestionStartTime: Date?
+    private var currentNomiQuestionTime: TimeInterval = 0
 
     var currentRound: Int {
         session.currentRound + 1
@@ -22,12 +27,13 @@ final class YouVsAIViewModel {
         session.totalRounds
     }
 
-    var userWins: Int {
-        session.userWins
+    var userCorrectCount: Int {
+        session.correctAnswers
     }
 
-    var aiWins: Int {
-        session.aiWins
+    var currentNomiEquation: Equation? {
+        guard nomiCurrentRound < session.totalRounds else { return nil }
+        return session.nomiEquations[nomiCurrentRound]
     }
 
     var isCorrectAnswer: Bool? {
@@ -43,6 +49,13 @@ final class YouVsAIViewModel {
     func startGame() {
         session = YouVsAISession()
         isComplete = false
+        nomiFinished = false
+        userElapsedTime = 0
+        nomiCurrentRound = 0
+        nomiQuestionProgress = 0
+
+        gameStartTime = Date()
+        startNomiTimer()
         startNextRound()
     }
 
@@ -58,91 +71,67 @@ final class YouVsAIViewModel {
         }
         selectedAnswer = nil
         showingResult = false
-        aiProgress = 0
-        roundStartTime = Date()
-        targetAiTime = session.aiTimeForRound(session.currentRound + 1)
-
-        startAITimer()
     }
 
-    private func startAITimer() {
-        aiTimer?.invalidate()
-        let updateInterval: TimeInterval = 0.05
-        var elapsed: TimeInterval = 0
+    private func startNomiTimer() {
+        nomiTimer?.invalidate()
+        nomiQuestionStartTime = Date()
+        currentNomiQuestionTime = session.nomiTimes[nomiCurrentRound]
 
-        aiTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] timer in
+        let updateInterval: TimeInterval = 0.05
+
+        nomiTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] timer in
             guard let self = self else {
                 timer.invalidate()
                 return
             }
 
-            elapsed += updateInterval
+            guard let startTime = self.gameStartTime else { return }
+            self.userElapsedTime = Date().timeIntervalSince(startTime)
 
-            if self.showingResult {
-                timer.invalidate()
-                return
-            }
+            if self.nomiFinished { return }
 
-            self.aiProgress = min(elapsed / self.targetAiTime, 1.0)
+            guard let questionStart = self.nomiQuestionStartTime else { return }
+            let questionElapsed = Date().timeIntervalSince(questionStart)
 
-            if elapsed >= self.targetAiTime && self.selectedAnswer == nil {
-                self.handleAIWin()
-                timer.invalidate()
+            self.nomiQuestionProgress = min(questionElapsed / self.currentNomiQuestionTime, 1.0)
+
+            if questionElapsed >= self.currentNomiQuestionTime {
+                self.advanceNomi()
             }
         }
     }
 
-    private func handleAIWin() {
-        guard let equation = currentEquation else { return }
+    private func advanceNomi() {
+        nomiCurrentRound += 1
+        nomiQuestionProgress = 0
 
-        let userTime: TimeInterval
-        if let start = roundStartTime {
-            userTime = Date().timeIntervalSince(start)
+        if nomiCurrentRound >= session.totalRounds {
+            nomiFinished = true
+            triggerHaptic(.warning)
+
+            if session.currentRound >= session.totalRounds {
+                completeGame()
+            }
         } else {
-            userTime = targetAiTime + 1
-        }
-
-        let result = RoundResult(
-            round: session.currentRound + 1,
-            userAnsweredCorrectly: false,
-            userTime: userTime,
-            aiTime: targetAiTime,
-            userWon: false
-        )
-
-        session.roundResults.append(result)
-        selectedAnswer = equation.answer
-        showingResult = true
-
-        triggerHaptic(.error)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            self?.advanceRound()
+            nomiQuestionStartTime = Date()
+            currentNomiQuestionTime = session.nomiTimes[nomiCurrentRound]
         }
     }
 
     func selectAnswer(_ answer: Int) {
         guard selectedAnswer == nil, let equation = currentEquation else { return }
 
-        aiTimer?.invalidate()
         selectedAnswer = answer
 
-        let userTime: TimeInterval
-        if let start = roundStartTime {
-            userTime = Date().timeIntervalSince(start)
-        } else {
-            userTime = 0
-        }
-
         let isCorrect = answer == equation.answer
-        let userWon = isCorrect && userTime < targetAiTime
 
         let result = RoundResult(
             round: session.currentRound + 1,
             userAnsweredCorrectly: isCorrect,
-            userTime: userTime,
-            aiTime: targetAiTime,
-            userWon: userWon
+            userTime: userElapsedTime,
+            aiTime: 0,
+            userWon: isCorrect
         )
 
         session.roundResults.append(result)
@@ -150,7 +139,7 @@ final class YouVsAIViewModel {
 
         triggerHaptic(isCorrect ? .success : .error)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
             self?.advanceRound()
         }
     }
@@ -165,8 +154,9 @@ final class YouVsAIViewModel {
     }
 
     private func completeGame() {
+        guard !isComplete else { return }
         isComplete = true
-        aiTimer?.invalidate()
+        nomiTimer?.invalidate()
     }
 
     func requestQuit() {
@@ -179,16 +169,27 @@ final class YouVsAIViewModel {
 
     func confirmQuit() {
         showQuitConfirmation = false
-        aiTimer?.invalidate()
+        nomiTimer?.invalidate()
     }
 
     func getGameResult() -> ZenArcadeGameResult {
-        let didWin = session.userWins >= 3
+        let userFinishedFirst = session.currentRound >= session.totalRounds && !nomiFinished
+        let allCorrect = session.correctAnswers == session.totalRounds
+        let didWin = userFinishedFirst && allCorrect
 
-        YouVsAIPersistence.recordRoundsWon(session.userWins, total: session.totalRounds)
+        YouVsAIPersistence.recordRoundsWon(session.correctAnswers, total: session.totalRounds)
 
         var stats: [String: String] = [:]
-        stats["Rounds Won"] = "\(session.userWins)/\(session.totalRounds)"
+        stats["Correct"] = "\(session.correctAnswers)/\(session.totalRounds)"
+        stats["Your Time"] = String(format: "%.1fs", userElapsedTime)
+
+        if didWin {
+            stats["Result"] = "You beat Nomi!"
+        } else if !allCorrect {
+            stats["Result"] = "Wrong answers"
+        } else {
+            stats["Result"] = "Nomi was faster"
+        }
 
         if let best = YouVsAIPersistence.bestRoundsWon {
             stats["Best"] = "\(best)/\(session.totalRounds)"
@@ -196,8 +197,8 @@ final class YouVsAIViewModel {
 
         return ZenArcadeGameResult(
             won: didWin,
-            score: session.userWins,
-            totalTime: session.userTotalTime,
+            score: session.correctAnswers,
+            totalTime: userElapsedTime,
             stats: stats
         )
     }

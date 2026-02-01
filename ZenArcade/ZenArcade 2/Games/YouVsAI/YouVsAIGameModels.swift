@@ -40,14 +40,25 @@ enum Difficulty: Int, CaseIterable {
         }
     }
 
-    var aiBaseTime: TimeInterval {
+    var nomiBaseTime: TimeInterval {
         switch self {
         case .easy:
-            return 2.5
+            return 2.2
         case .medium:
-            return 2.0
+            return 3.0
         case .hard:
-            return 1.5
+            return 4.0
+        }
+    }
+
+    var nomiTimeVariance: ClosedRange<Double> {
+        switch self {
+        case .easy:
+            return -0.8...1.2
+        case .medium:
+            return -1.0...1.8
+        case .hard:
+            return -1.2...2.5
         }
     }
 }
@@ -139,6 +150,8 @@ struct YouVsAISession {
     let totalRounds: Int
     var currentRound: Int = 0
     var equations: [Equation] = []
+    var nomiEquations: [Equation] = []
+    var nomiTimes: [TimeInterval] = []
     var roundResults: [RoundResult] = []
     var rng: SeededRandomGenerator
 
@@ -172,6 +185,7 @@ struct YouVsAISession {
         self.totalRounds = totalRounds
         self.rng = SeededRandomGenerator(seed: seed)
         generateEquations()
+        generateNomiEquationsAndTimes()
     }
 
     private mutating func generateEquations() {
@@ -181,7 +195,19 @@ struct YouVsAISession {
         }
     }
 
-    private func difficultyForRound(_ round: Int) -> Difficulty {
+    private mutating func generateNomiEquationsAndTimes() {
+        var nomiRng = SeededRandomGenerator(seed: seed &+ 12345)
+        for i in 0..<totalRounds {
+            let difficulty = difficultyForRound(i + 1)
+            nomiEquations.append(Equation.generate(difficulty: difficulty, rng: &nomiRng))
+
+            let baseTime = difficulty.nomiBaseTime
+            let variance = Double.random(in: difficulty.nomiTimeVariance, using: &nomiRng)
+            nomiTimes.append(max(0.8, baseTime + variance))
+        }
+    }
+
+    func difficultyForRound(_ round: Int) -> Difficulty {
         switch round {
         case 1...2:
             return .easy
@@ -190,13 +216,6 @@ struct YouVsAISession {
         default:
             return .hard
         }
-    }
-
-    func aiTimeForRound(_ round: Int) -> TimeInterval {
-        let difficulty = difficultyForRound(round)
-        let baseTime = difficulty.aiBaseTime
-        let variance = Double.random(in: -0.3...0.5)
-        return baseTime + variance
     }
 }
 

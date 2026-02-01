@@ -25,34 +25,38 @@ struct ZenArcadeMenuView: View {
                 Spacer().frame(height: 40)
 
                 HStack(spacing: 16) {
-                    ZenArcadeTiltedGameCard(
-                        icon: "brain.head.profile",
-                        title: "YOU VS AI",
-                        accentColor: ZenArcadeTheme.Colors.accentBlue,
+                    GameCard(
+                        title: "ME VS. NOMI",
+                        accentColor: ZenArcadeTheme.Colors.nomiGreen,
                         rotation: -5,
-                        isSelected: selectedIndex == 0
+                        isSelected: selectedIndex == 0,
+                        action: {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                selectedIndex = 0
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                router.navigate(to: .youVsAI)
+                            }
+                        }
                     ) {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedIndex = 0
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            router.navigate(to: .youVsAI)
-                        }
+                        MeVsNomiCardContent()
                     }
 
-                    ZenArcadeTiltedGameCard(
-                        icon: "textformat.abc",
+                    GameCard(
                         title: "WORD SEARCH",
                         accentColor: ZenArcadeTheme.Colors.accentGreen,
                         rotation: 5,
-                        isSelected: selectedIndex == 1
+                        isSelected: selectedIndex == 1,
+                        action: {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                selectedIndex = 1
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                router.navigate(to: .wordSearch)
+                            }
+                        }
                     ) {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedIndex = 1
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            router.navigate(to: .wordSearch)
-                        }
+                        WordSearchCardContent()
                     }
                 }
                 .padding(.horizontal, 24)
@@ -69,13 +73,92 @@ struct ZenArcadeMenuView: View {
     }
 }
 
-struct ZenArcadeTiltedGameCard: View {
-    let icon: String
+struct MeVsNomiCardContent: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            HStack(spacing: 12) {
+                Circle()
+                    .fill(ZenArcadeTheme.Colors.selectionGreen)
+                    .frame(width: 44, height: 44)
+                    .overlay(
+                        Text("ME")
+                            .font(ZenArcadeTheme.Font.rounded(12, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.background)
+                    )
+
+                Text("VS")
+                    .font(ZenArcadeTheme.Font.rounded(16, .black))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.5))
+
+                Image("nomi_fire")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 44, height: 44)
+            }
+
+            Image("nomi_fire")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
+
+            VStack(spacing: 6) {
+                Text("7 × 8 = ?")
+                    .font(ZenArcadeTheme.Font.rounded(22, .bold))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textPrimary.opacity(0.9))
+
+                Text("Race to solve!")
+                    .font(ZenArcadeTheme.Font.rounded(13))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.6))
+            }
+
+            Spacer()
+        }
+    }
+}
+
+struct WordSearchCardContent: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Spacer()
+
+            Image("nomi_meditate")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 90, height: 90)
+
+            VStack(spacing: 8) {
+                HStack(spacing: 3) {
+                    ForEach(["C", "A", "L", "M"], id: \.self) { letter in
+                        Text(letter)
+                            .font(ZenArcadeTheme.Font.rounded(16, .bold))
+                            .foregroundStyle(ZenArcadeTheme.Colors.foundGreen)
+                            .frame(width: 28, height: 32)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(ZenArcadeTheme.Colors.foundGreen.opacity(0.2))
+                            )
+                    }
+                }
+
+                Text("Find hidden words")
+                    .font(ZenArcadeTheme.Font.rounded(13))
+                    .foregroundStyle(ZenArcadeTheme.Colors.textSecondary.opacity(0.6))
+            }
+
+            Spacer()
+        }
+    }
+}
+
+struct GameCard<Content: View>: View {
     let title: String
     let accentColor: Color
     let rotation: Double
     let isSelected: Bool
     let action: () -> Void
+    @ViewBuilder let content: Content
 
     var body: some View {
         Button(action: action) {
@@ -89,12 +172,10 @@ struct ZenArcadeTiltedGameCard: View {
 
                 Spacer()
 
-                Image(systemName: icon)
-                    .font(.system(size: 64, weight: .light))
-                    .foregroundStyle(accentColor.opacity(0.7))
+                content
 
                 Spacer()
-                Spacer().frame(height: 30)
+                Spacer().frame(height: 20)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 360)
@@ -108,14 +189,14 @@ struct ZenArcadeTiltedGameCard: View {
             )
             .shadow(color: accentColor.opacity(isSelected ? 0.2 : 0.05), radius: isSelected ? 24 : 16, y: 10)
         }
-        .buttonStyle(ZenArcadeTiltedCardButtonStyle())
+        .buttonStyle(TiltedCardButtonStyle())
         .rotationEffect(.degrees(rotation))
         .scaleEffect(isSelected ? 1.02 : 1.0)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
     }
 }
 
-struct ZenArcadeTiltedCardButtonStyle: ButtonStyle {
+struct TiltedCardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
