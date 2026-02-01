@@ -8,9 +8,9 @@ struct GameOverView: View {
     private var nomiImage: String {
         switch gameType {
         case .youVsAI:
-            return result.won ? "nomi_cry" : "nomi_fire"
+            return result.won ? "nomi_love" : "nomi_fire"
         case .wordSearch:
-            return result.won ? "nomi_love" : "nomi_peek"
+            return result.won ? "nomi_love" : "nomi_smile"
         }
     }
 
